@@ -6,8 +6,8 @@ services:
     region: oregon
     plan: free
     branch: main
-    buildCommand: "./build.sh"
-    startCommand: "cd minor && gunicorn minor.wsgi:application --workers 1 --threads 2 --timeout 120 --max-requests 100 --max-requests-jitter 10"
+    buildCommand: "chmod +x build.sh && ./build.sh"
+    startCommand: "cd minor && gunicorn minor.wsgi:application --bind 0.0.0.0:$PORT --workers 1 --threads 2 --timeout 120 --max-requests 100 --max-requests-jitter 10"
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.0
@@ -17,3 +17,7 @@ services:
         value: minor.settings_production
       - key: WEB_CONCURRENCY
         value: 1
+      - key: DEBUG
+        value: False
+      - key: ALLOWED_HOSTS
+        value: .onrender.com
