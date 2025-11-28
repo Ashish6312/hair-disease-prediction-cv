@@ -7,7 +7,7 @@ services:
     plan: free
     branch: main
     buildCommand: "./build.sh"
-    startCommand: "cd minor && gunicorn minor.wsgi:application"
+    startCommand: "cd minor && gunicorn minor.wsgi:application --workers 1 --threads 2 --timeout 120 --max-requests 100 --max-requests-jitter 10"
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.0
@@ -16,11 +16,8 @@ services:
       - key: DJANGO_SETTINGS_MODULE
         value: minor.settings_production
       - key: WEB_CONCURRENCY
-        value: 4
-    
-  # PostgreSQL Database
-  - type: pserv
-    name: hair-scalp-db
-    env: docker
-    plan: free
-    region: oregon
+        value: 1
+    disk:
+      name: sqlite-data
+      mountPath: /opt/render/project/src/minor
+      sizeGB: 1
