@@ -62,6 +62,19 @@
         justify-content: center;
         padding: 120px 2rem 3rem 2rem;
       }
+      
+      @media (max-width: 768px) {
+        main {
+          padding: 100px 1rem 2rem 1rem;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        main {
+          padding: 90px 0.5rem 1.5rem 0.5rem;
+          align-items: flex-start;
+        }
+      }
       .navbar {
         position: fixed;
         top: 0;
@@ -147,6 +160,20 @@
         width: 100%;
         max-width: 1400px;
       }
+      
+      @media (max-width: 768px) {
+        .result-card {
+          padding: 1.5rem;
+          border-radius: 8px;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        .result-card {
+          padding: 1rem;
+          border-radius: 6px;
+        }
+      }
       .result-header {
         display: flex;
         flex-wrap: wrap;
@@ -163,6 +190,29 @@
         color: var(--text-dark);
         letter-spacing: -0.5px;
       }
+      
+      @media (max-width: 768px) {
+        .result-header {
+          gap: 1rem;
+          margin-bottom: 1.5rem;
+          padding-bottom: 1rem;
+        }
+        .result-header h1 {
+          font-size: 1.5rem;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        .result-header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 0.75rem;
+          margin-bottom: 1rem;
+        }
+        .result-header h1 {
+          font-size: 1.25rem;
+        }
+      }
 
       .result-grid {
         display: grid;
@@ -177,9 +227,28 @@
         }
       }
       
+      @media (max-width: 768px) {
+        .result-grid {
+          gap: 1.5rem;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        .result-grid {
+          gap: 1rem;
+        }
+      }
+      
       .image-section {
         position: sticky;
         top: 100px;
+      }
+      
+      @media (max-width: 1024px) {
+        .image-section {
+          position: relative;
+          top: 0;
+        }
       }
 
       /* Image Preview Section */
@@ -224,6 +293,30 @@
         margin-top: 1.25rem;
         justify-content: center;
       }
+      
+      @media (max-width: 768px) {
+        #previewContainer {
+          border-radius: 8px;
+        }
+        
+        .image-controls {
+          gap: 0.5rem;
+          margin-top: 1rem;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        #previewContainer {
+          border-radius: 6px;
+          padding-top: 80%;
+        }
+        
+        .image-controls {
+          flex-direction: column;
+          gap: 0.5rem;
+          margin-top: 0.75rem;
+        }
+      }
 
       .details-container {
         display: flex;
@@ -239,10 +332,38 @@
         box-shadow: var(--shadow);
         transition: all var(--transition-speed);
         width: 100%;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
       }
       .info-box:hover {
         box-shadow: var(--shadow-lg);
         transform: translateY(-2px);
+      }
+      
+      @media (max-width: 768px) {
+        .details-container {
+          gap: 1rem;
+        }
+        
+        .info-box {
+          padding: 1.25rem;
+          border-radius: 8px;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        .details-container {
+          gap: 0.75rem;
+        }
+        
+        .info-box {
+          padding: 1rem;
+          border-radius: 6px;
+        }
+        
+        .info-box:hover {
+          transform: none;
+        }
       }
       .info-box p.label {
         font-size: 0.8rem;
@@ -266,6 +387,7 @@
         font-weight: 700;
         font-size: 1.1rem;
         box-shadow: 0 4px 12px rgba(20, 184, 166, 0.3);
+        word-break: break-word;
       }
       #confidenceText {
         margin-top: 1rem;
@@ -288,10 +410,57 @@
         align-items: center;
         gap: 0.5rem;
         transition: all var(--transition-speed);
+        word-break: break-word;
       }
       #detailsLink:hover {
         gap: 0.75rem;
         color: #0d9488;
+      }
+      
+      @media (max-width: 768px) {
+        #predicted {
+          font-size: 1rem;
+          padding: 0.625rem 1.25rem;
+          gap: 0.5rem;
+        }
+        
+        #confidenceText {
+          font-size: 0.875rem;
+          margin-top: 0.75rem;
+        }
+        
+        #detailsText {
+          font-size: 0.9rem;
+          margin-bottom: 1rem;
+          line-height: 1.6;
+        }
+        
+        #detailsLink {
+          font-size: 0.9rem;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        #predicted {
+          font-size: 0.9rem;
+          padding: 0.5rem 1rem;
+          gap: 0.5rem;
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+        
+        #confidenceText {
+          font-size: 0.8rem;
+        }
+        
+        #detailsText {
+          font-size: 0.85rem;
+          line-height: 1.5;
+        }
+        
+        #detailsLink {
+          font-size: 0.85rem;
+        }
       }
 
       .btn {
@@ -308,6 +477,7 @@
         cursor: pointer;
         font-size: 1rem;
         box-shadow: var(--shadow);
+        white-space: nowrap;
       }
       .btn:hover {
         transform: translateY(-2px);
@@ -338,6 +508,48 @@
         flex-wrap: wrap;
         gap: 1rem;
         margin-top: 1rem;
+      }
+      
+      @media (max-width: 768px) {
+        .btn {
+          padding: 0.75rem 1.5rem;
+          font-size: 0.9rem;
+          gap: 0.5rem;
+        }
+        
+        .btn-sm {
+          padding: 0.5rem 1rem;
+          font-size: 0.85rem;
+        }
+        
+        .action-buttons {
+          gap: 0.75rem;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        .btn {
+          width: 100%;
+          padding: 0.75rem 1rem;
+          font-size: 0.85rem;
+          white-space: normal;
+          text-align: center;
+        }
+        
+        .btn:hover {
+          transform: none;
+        }
+        
+        .btn-sm {
+          width: 100%;
+          padding: 0.625rem 1rem;
+          font-size: 0.8rem;
+        }
+        
+        .action-buttons {
+          flex-direction: column;
+          gap: 0.5rem;
+        }
       }
 
       #noData {
@@ -456,6 +668,14 @@
         }
       }
       
+      @media (max-width: 480px) {
+        .stage-grid {
+          gap: 0.5rem;
+          margin-top: 0.75rem;
+          margin-bottom: 1rem;
+        }
+      }
+      
       .stage-item {
         background: rgba(255, 255, 255, 0.5);
         padding: 1rem;
@@ -491,6 +711,42 @@
         font-weight: 700;
         color: #f59e0b;
         line-height: 1.3;
+        word-break: break-word;
+      }
+      
+      @media (max-width: 768px) {
+        .stage-item {
+          padding: 0.75rem;
+          border-radius: 6px;
+        }
+        
+        .stage-label {
+          font-size: 0.65rem;
+          margin-bottom: 0.375rem;
+        }
+        
+        .stage-value {
+          font-size: 0.9rem;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        .stage-item {
+          padding: 0.625rem 0.5rem;
+        }
+        
+        .stage-item:hover {
+          transform: none;
+        }
+        
+        .stage-label {
+          font-size: 0.6rem;
+          letter-spacing: 0.5px;
+        }
+        
+        .stage-value {
+          font-size: 0.85rem;
+        }
       }
       
       .stage-notes {
@@ -521,6 +777,40 @@
         color: var(--text-dark);
         line-height: 1.6;
         margin: 0;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+      }
+      
+      @media (max-width: 768px) {
+        .stage-notes {
+          padding: 1rem;
+          border-radius: 6px;
+        }
+        
+        .stage-notes-label {
+          font-size: 0.7rem;
+          margin-bottom: 0.5rem;
+        }
+        
+        .stage-notes-text {
+          font-size: 0.85rem;
+          line-height: 1.5;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        .stage-notes {
+          padding: 0.75rem;
+        }
+        
+        .stage-notes-label {
+          font-size: 0.65rem;
+          letter-spacing: 0.5px;
+        }
+        
+        .stage-notes-text {
+          font-size: 0.8rem;
+        }
       }
     </style>
   </head>
