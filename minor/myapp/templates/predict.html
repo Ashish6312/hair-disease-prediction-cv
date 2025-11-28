@@ -630,14 +630,6 @@
 
       function handleFile(file) {
         if (file && file.type.startsWith("image/")) {
-          // Clear captured image when user uploads new file
-          sessionStorage.removeItem('capturedImage');
-          sessionStorage.removeItem('capturedImageName');
-          sessionStorage.removeItem('captureTimestamp');
-          localStorage.removeItem('capturedImage');
-          localStorage.removeItem('capturedImageName');
-          localStorage.removeItem('captureTimestamp');
-          
           const reader = new FileReader();
           reader.onload = (e) => {
             previewImage.src = e.target.result;
@@ -652,6 +644,8 @@
           fileInfo.textContent = "Please select a valid image file.";
         }
       }
+
+
 
       fileInput.addEventListener("change", () =>
         handleFile(fileInput.files[0])
@@ -679,15 +673,6 @@
         fileInfo.textContent = "";
         fileInput.value = "";
         resetZoomAndPosition();
-        
-        // Clear captured image from storage when user removes it
-        sessionStorage.removeItem('capturedImage');
-        sessionStorage.removeItem('capturedImageName');
-        sessionStorage.removeItem('captureTimestamp');
-        localStorage.removeItem('capturedImage');
-        localStorage.removeItem('capturedImageName');
-        localStorage.removeItem('captureTimestamp');
-        console.log('Captured image cleared from storage');
       }
       function updateTransform() {
         previewImage.style.transform = `translate(${translateX}px, ${translateY}px) scale(${currentZoom})`;
@@ -823,25 +808,17 @@
         document.addEventListener(event, resetSessionTimer, true);
       });
 
-      // Clear storage when clicking "Use Camera" button
-      const useCameraBtn = document.getElementById('useCameraBtn');
-      if (useCameraBtn) {
-        useCameraBtn.addEventListener('click', (e) => {
-          // Clear previous captured image
-          sessionStorage.removeItem('capturedImage');
-          sessionStorage.removeItem('capturedImageName');
-          sessionStorage.removeItem('captureTimestamp');
-          localStorage.removeItem('capturedImage');
-          localStorage.removeItem('capturedImageName');
-          localStorage.removeItem('captureTimestamp');
-          console.log('Cleared previous captured image before opening camera');
-        });
-      }
 
-      // Check if there's a captured image from camera page
-      window.addEventListener('load', () => {
-        console.log('=== PREDICT PAGE LOADED ===');
-        console.log('Checking for captured image...');
+
+      // Manual check function for debugging
+      window.checkCapturedImage = function() {
+        console.log('=== MANUAL CHECK TRIGGERED ===');
+        checkForCapturedImage();
+      };
+
+      // Check for captured image from camera
+      function checkForCapturedImage() {
+        console.log('=== CHECKING FOR CAPTURED IMAGE ===');
         
         // Check sessionStorage first, then localStorage
         let capturedImage = sessionStorage.getItem('capturedImage');
@@ -867,13 +844,11 @@
           });
         }
         
-        console.log('Final result - Captured image exists:', !!capturedImage);
-        
         if (capturedImage) {
-          console.log('Loading captured image...');
+          console.log('✓ Captured image found! Loading...');
           
           try {
-            // Convert base64 to blob
+            // Convert base64 to blob and create file
             fetch(capturedImage)
               .then(res => res.blob())
               .then(blob => {
@@ -897,38 +872,64 @@
                 fileInfo.textContent = '✓ Captured from camera';
                 resetZoomAndPosition();
 
-                console.log('Image loaded successfully!');
-
-                // DON'T clear storage - keep it until page refresh
-                // This allows the image to persist even if user navigates away
-                console.log('=== IMAGE LOADED SUCCESSFULLY ===');
-                console.log('Storage kept for persistence');
-              })
-              .catch(error => {
-                console.error('Error loading image:', error);
-                alert('Error loading captured image. Please try again.');
+                console.log('✓ Image loaded successfully from camera!');
+                
+                // Clear storage after successful load
                 sessionStorage.removeItem('capturedImage');
                 sessionStorage.removeItem('capturedImageName');
+                sessionStorage.removeItem('captureTimestamp');
                 localStorage.removeItem('capturedImage');
                 localStorage.removeItem('capturedImageName');
+                localStorage.removeItem('captureTimestamp');
+                
+                console.log('✓ Storage cleared after loading');
+              })
+              .catch(error => {
+                console.error('Error loading captured image:', error);
+                alert('Error loading captured image. Please try again.');
+                
+                // Clear storage on error
+                sessionStorage.removeItem('capturedImage');
+                sessionStorage.removeItem('capturedImageName');
+                sessionStorage.removeItem('captureTimestamp');
+                localStorage.removeItem('capturedImage');
+                localStorage.removeItem('capturedImageName');
+                localStorage.removeItem('captureTimestamp');
               });
           } catch (error) {
-            console.error('Error processing image:', error);
+            console.error('Error processing captured image:', error);
             alert('Error processing captured image. Please try again.');
-            sessionStorage.removeItem('capturedImage');
-            sessionStorage.removeItem('capturedImageName');
-            localStorage.removeItem('capturedImage');
-            localStorage.removeItem('capturedImageName');
           }
         } else {
-          console.log('No captured image found in sessionStorage');
+          console.log('No captured image found');
         }
+      }
+
+      // Check for captured image on DOM ready
+      document.addEventListener('DOMContentLoaded', () => {
+        console.log('=== DOM CONTENT LOADED ===');
+        setTimeout(() => {
+          checkForCapturedImage();
+        }, 50);
       });
+
+      // Start session timer on page load
+      window.addEventListener('load', () => {
+        console.log('=== PREDICT PAGE LOADED ===');
+        
+        // Small delay to ensure DOM is fully ready
+        setTimeout(() => {
+          checkForCapturedImage();
+        }, 100);
+        
+        startSessionTimer();
+      });
+
+
     </script>
     <script> window.chtlConfig = { chatbotId: "8383945963" } </script>
 <script async data-id="8383945963" id="chtl-script" type="text/javascript" src="https://chatling.ai/js/embed.js"></script>
     
-    <!-- PWA Install Banner -->
-    {% include 'pwa_banner.html' %}
+
   </body>
 </html>
