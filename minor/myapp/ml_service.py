@@ -36,12 +36,23 @@ class MLModelService:
     def load_model(self):
         """Load the trained PyTorch model"""
         try:
-            # Use absolute path to the model in required_files folder
-            model_path = r"D:\disease prediction model\required_files\best_model.pth"
-            
-            # Fallback to relative path if absolute doesn't exist
-            if not os.path.exists(model_path):
+            # Try to get model path from Django settings (for production)
+            try:
+                from django.conf import settings
+                if hasattr(settings, 'ML_MODEL_PATH'):
+                    model_path = settings.ML_MODEL_PATH
+                else:
+                    # Fallback to relative path
+                    model_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "best_model.pth")
+            except:
+                # If Django not configured, use relative path
                 model_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "best_model.pth")
+            
+            # Additional fallback for development
+            if not os.path.exists(model_path):
+                dev_path = r"D:\disease prediction model\required_files\best_model.pth"
+                if os.path.exists(dev_path):
+                    model_path = dev_path
             
             if not os.path.exists(model_path):
                 raise FileNotFoundError(f"Model file not found at {model_path}")

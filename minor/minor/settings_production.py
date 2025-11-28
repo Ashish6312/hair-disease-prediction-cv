@@ -92,6 +92,9 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+# ML MODEL PATH - Point to the model in the parent directory
+ML_MODEL_PATH = os.path.join(BASE_DIR.parent, 'best_model.pth')
+
 # SECURITY
 SECURE_SSL_REDIRECT = True
 SESSION_COOKIE_SECURE = True
