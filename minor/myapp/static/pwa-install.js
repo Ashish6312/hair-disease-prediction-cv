@@ -1,13 +1,43 @@
 // PWA Installation Handler
 let deferredPrompt;
 const installButton = document.getElementById('installButton');
-const installBanner = document.getElementById('installBanner');
 
-// Check if app is already installed
-if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
-  console.log('App is running in standalone mode');
-  if (installBanner) installBanner.style.display = 'none';
-  if (installButton) installButton.style.display = 'none';
+// Check if we're on the home page
+function isHomePage() {
+  return window.location.pathname === '/' || 
+         window.location.pathname === '/home' || 
+         window.location.pathname.endsWith('/') ||
+         window.location.pathname === '';
+}
+
+// Check if app should show install button
+function shouldShowInstallButton() {
+  // Only show on home page
+  if (!isHomePage()) {
+    console.log('Not on home page, hiding install button');
+    return false;
+  }
+  
+  // Check if app is already installed
+  if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+    console.log('App is running in standalone mode');
+    return false;
+  }
+  
+  return true;
+}
+
+// Initialize install button visibility
+function initializeInstallButton() {
+  if (!installButton) return;
+  
+  if (shouldShowInstallButton()) {
+    console.log('Install button should be available');
+    // Don't show immediately, wait for beforeinstallprompt
+  } else {
+    console.log('Install button should not be shown');
+    installButton.style.display = 'none';
+  }
 }
 
 // Listen for beforeinstallprompt event
@@ -17,12 +47,13 @@ window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   // Stash the event so it can be triggered later
   deferredPrompt = e;
-  // Show install banner/button
-  if (installBanner) {
-    installBanner.style.display = 'flex';
-  }
-  if (installButton) {
-    installButton.style.display = 'inline-flex';
+  
+  // Show install button only on home page and if conditions are met
+  if (shouldShowInstallButton()) {
+    console.log('Showing PWA install button on home page');
+    if (installButton) {
+      installButton.style.display = 'flex';
+    }
   }
 });
 
@@ -31,6 +62,7 @@ if (installButton) {
   installButton.addEventListener('click', async () => {
     if (!deferredPrompt) {
       console.log('No deferred prompt available');
+      showNotification('Install not available. Try adding to home screen manually.');
       return;
     }
     // Show the install prompt
@@ -40,24 +72,14 @@ if (installButton) {
     console.log(`User response to the install prompt: ${outcome}`);
     // Clear the deferred prompt variable
     deferredPrompt = null;
-    // Hide the install banner/button
-    if (installBanner) installBanner.style.display = 'none';
+    // Hide the install button
     if (installButton) installButton.style.display = 'none';
-  });
-}
-
-// Close banner button
-const closeBannerBtn = document.getElementById('closeBanner');
-if (closeBannerBtn) {
-  closeBannerBtn.addEventListener('click', () => {
-    if (installBanner) installBanner.style.display = 'none';
   });
 }
 
 // Listen for app installed event
 window.addEventListener('appinstalled', () => {
   console.log('PWA was installed');
-  if (installBanner) installBanner.style.display = 'none';
   if (installButton) installButton.style.display = 'none';
   // Show success message
   showNotification('App installed successfully! You can now use it offline.');
@@ -148,3 +170,8 @@ if (isIOS() && !isInStandaloneMode()) {
     iosPrompt.style.display = 'block';
   }
 }
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', () => {
+  initializeInstallButton();
+});
