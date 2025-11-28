@@ -82,12 +82,30 @@ WSGI_APPLICATION = 'minor.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+# Use MongoDB if MONGODB_URI is set, otherwise SQLite for local development
+MONGODB_URI = os.environ.get('MONGODB_URI')
+MONGODB_NAME = os.environ.get('MONGODB_NAME', 'hairscalp_db')
+
+if MONGODB_URI:
+    # MongoDB Atlas configuration
+    DATABASES = {
+        'default': {
+            'ENGINE': 'djongo',
+            'NAME': MONGODB_NAME,
+            'ENFORCE_SCHEMA': False,
+            'CLIENT': {
+                'host': MONGODB_URI,
+            }
+        }
     }
-}
+else:
+    # Local development with SQLite
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 
 # Password validation

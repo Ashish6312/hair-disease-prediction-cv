@@ -4,6 +4,10 @@ Production settings for deployment on Render
 from .settings import *
 import os
 
+# MongoDB configuration
+MONGODB_URI = os.environ.get('MONGODB_URI')
+MONGODB_NAME = os.environ.get('MONGODB_NAME', 'hairscalp_db')
+
 # SECURITY SETTINGS
 DEBUG = False
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-q$p7bwhr1&oiimk3@r59_5-nwsyqhqr*$wf+7pq=ko4+q(71m0')
@@ -45,13 +49,26 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 # DATABASE
-# Use SQLite for simplicity on free tier
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+# MongoDB Atlas configuration
+if MONGODB_URI:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'djongo',
+            'NAME': MONGODB_NAME,
+            'ENFORCE_SCHEMA': False,
+            'CLIENT': {
+                'host': MONGODB_URI,
+            }
+        }
     }
-}
+else:
+    # Fallback to SQLite if MongoDB not configured
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
+    }
 
 # STATIC FILES
 STATIC_URL = '/static/'
