@@ -17,7 +17,7 @@ services:
         value: minor.settings_production
       - key: WEB_CONCURRENCY
         value: 1
-    disk:
-      name: sqlite-data
-      mountPath: /opt/render/project/src/minor
-      sizeGB: 1
+      - key: MONGODB_URI
+        value: mongodb+srv://ashishsharma120512_db_user:g853JPKKNd5g4QOz@cluster0.sohqiaa.mongodb.net/?appName=Cluster0
+      - key: MONGODB_NAME
+        value: hairscalp_db
