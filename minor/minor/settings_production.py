@@ -16,9 +16,9 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-q$p7bwhr1&oiimk3@r59_
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
-    'hair-scalp-detector.onrender.com',  # Your actual Render domain
-    '.onrender.com',  # All Render domains
-    '.vercel.app',    # Your Vercel frontend domain (if needed)
+    '.railway.app',  # Railway domains
+    '.onrender.com',  # Render domains (if still using)
+    '.vercel.app',    # Vercel frontend domain (if needed)
 ]
 
 # CORS SETTINGS for Vercel frontend
@@ -43,8 +43,8 @@ CORS_ALLOW_HEADERS = [
 
 # CSRF SETTINGS
 CSRF_TRUSTED_ORIGINS = [
-    'https://hair-scalp-detector.onrender.com',  # Your actual domain
-    'https://*.onrender.com',
+    'https://*.railway.app',  # Railway domains
+    'https://*.onrender.com',  # Render domains (if still using)
     'https://*.vercel.app',
 ]
 
