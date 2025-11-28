@@ -1742,6 +1742,10 @@
           <i class="fas fa-camera"></i>
           <span>Back</span>
         </div>
+        <div class="camera-switch-btn" id="flashlightBtn">
+          <i class="fas fa-bolt"></i>
+          <span>Flash</span>
+        </div>
       </div>
 
       <div class="mode-toggle">
@@ -1876,6 +1880,10 @@
       // Camera switching elements
       const frontCameraBtn = document.getElementById('frontCameraBtn');
       const backCameraBtn = document.getElementById('backCameraBtn');
+      const flashlightBtn = document.getElementById('flashlightBtn');
+      
+      let flashlightEnabled = false;
+      let currentTrack = null;
       
       // Crop elements
       const cropButton = document.getElementById('cropButton');
@@ -2090,6 +2098,11 @@
         switchCamera('environment');
       });
 
+      // Flashlight toggle button
+      flashlightBtn.addEventListener('click', () => {
+        toggleFlashlight();
+      });
+
       // Confirmation screen buttons
       usePhotoButton.addEventListener('click', () => {
         saveAndProceed();
@@ -2185,6 +2198,24 @@
 
           cameraStream = await navigator.mediaDevices.getUserMedia(constraints);
           cameraVideo.srcObject = cameraStream;
+          
+          // Store the video track for flashlight control
+          const videoTrack = cameraStream.getVideoTracks()[0];
+          currentTrack = videoTrack;
+          
+          // Check if flashlight is supported
+          const capabilities = videoTrack.getCapabilities ? videoTrack.getCapabilities() : {};
+          if (capabilities.torch) {
+            flashlightBtn.style.display = 'flex';
+            console.log('Flashlight supported on this device');
+          } else {
+            flashlightBtn.style.display = 'none';
+            console.log('Flashlight not supported on this device');
+          }
+          
+          // Reset flashlight state when switching cameras
+          flashlightEnabled = false;
+          flashlightBtn.classList.remove('active');
 
           cameraVideo.onloadedmetadata = () => {
             if (autoCapture) {
@@ -2215,9 +2246,45 @@
           cameraStream.getTracks().forEach(track => track.stop());
           cameraStream = null;
         }
+        currentTrack = null;
+        flashlightEnabled = false;
         clearInterval(countdownInterval);
         detectionRunning = false;
         stopMeshAnimation();
+      }
+      
+      // Toggle flashlight function
+      async function toggleFlashlight() {
+        if (!currentTrack) {
+          console.warn('No video track available');
+          return;
+        }
+        
+        try {
+          const capabilities = currentTrack.getCapabilities();
+          
+          if (!capabilities.torch) {
+            alert('Flashlight is not supported on this camera');
+            return;
+          }
+          
+          flashlightEnabled = !flashlightEnabled;
+          
+          await currentTrack.applyConstraints({
+            advanced: [{ torch: flashlightEnabled }]
+          });
+          
+          // Update UI
+          flashlightBtn.classList.toggle('active', flashlightEnabled);
+          
+          console.log('Flashlight:', flashlightEnabled ? 'ON' : 'OFF');
+          
+        } catch (error) {
+          console.error('Flashlight error:', error);
+          alert('Failed to toggle flashlight. This feature may not be supported on your device.');
+          flashlightEnabled = false;
+          flashlightBtn.classList.remove('active');
+        }
       }
 
       // Face detection
