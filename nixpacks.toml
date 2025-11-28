@@ -1,8 +1,9 @@
 [phases.setup]
 nixPkgs = ["python311"]
+aptPkgs = ["python3-pip"]
 
 [phases.install]
-cmds = ["pip install -r minor/requirements.txt"]
+cmds = ["pip3 install -r minor/requirements.txt"]
 
 [phases.build]
 cmds = ["chmod +x build.sh", "./build.sh"]
