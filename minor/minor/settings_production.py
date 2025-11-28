@@ -49,16 +49,18 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 # DATABASE
-# MongoDB Atlas configuration
+# MongoDB Atlas configuration using pymongo directly
 if MONGODB_URI:
+    from pymongo import MongoClient
+    # Store connection for use in models
+    MONGODB_CLIENT = MongoClient(MONGODB_URI)
+    MONGODB_DATABASE = MONGODB_CLIENT[MONGODB_NAME]
+    
+    # Still need to define DATABASES for Django auth/sessions
     DATABASES = {
         'default': {
-            'ENGINE': 'djongo',
-            'NAME': MONGODB_NAME,
-            'ENFORCE_SCHEMA': False,
-            'CLIENT': {
-                'host': MONGODB_URI,
-            }
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         }
     }
 else:
