@@ -1,0 +1,360 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Upgrade Plan - Hair & Scalp AI</title>
+    <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary-color: #14b8a6;
+        --secondary-color-bg: #f3f4f6;
+        --accent-color: #10b981;
+        --error-color: #ef4444;
+        --text-dark: #1f2937;
+        --text-light: #6b7280;
+        --white-color: #ffffff;
+        --border-color: #e5e7eb;
+        --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07),
+          0 2px 4px -2px rgba(0, 0, 0, 0.07);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+          0 4px 6px -4px rgba(0, 0, 0, 0.1);
+        --border-radius: 12px;
+        --transition-speed: 0.3s ease;
+      }
+      [data-theme="dark"] {
+        --secondary-color-bg: #111827;
+        --text-dark: #f3f4f6;
+        --text-light: #9ca3af;
+        --white-color: #1f2937;
+        --border-color: #374151;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        font-family: "Poppins", sans-serif;
+        line-height: 1.7;
+        color: var(--text-dark);
+        background-color: var(--secondary-color-bg);
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+      .navbar {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+        z-index: 1000;
+        padding: 1rem 0;
+        border-bottom: 1px solid transparent;
+        transition: all var(--transition-speed);
+      }
+      [data-theme="dark"] .navbar {
+        background: rgba(31, 41, 55, 0.8);
+      }
+      .nav-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 1rem;
+      }
+      .logo {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        text-decoration: none;
+      }
+      .theme-toggle {
+        background: var(--white-color);
+        border: 1px solid var(--border-color);
+        color: var(--text-light);
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: all var(--transition-speed);
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      main {
+        flex-grow: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 120px 2rem 3rem 2rem;
+      }
+      
+      .pricing-header {
+        text-align: center;
+        margin-bottom: 3rem;
+      }
+      .pricing-header h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 1rem;
+      }
+      .pricing-header p {
+        font-size: 1.1rem;
+        color: var(--text-light);
+        max-width: 600px;
+        margin: 0 auto;
+      }
+      
+      .pricing-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      
+      .pricing-card {
+        background: var(--white-color);
+        border-radius: var(--border-radius);
+        padding: 2.5rem;
+        border: 1px solid var(--border-color);
+        box-shadow: var(--shadow);
+        transition: all var(--transition-speed);
+        display: flex;
+        flex-direction: column;
+        position: relative;
+      }
+      .pricing-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-lg);
+        border-color: var(--primary-color);
+      }
+      
+      .pricing-card.popular {
+        border: 2px solid var(--primary-color);
+        box-shadow: var(--shadow-lg);
+      }
+      .popular-badge {
+        position: absolute;
+        top: -12px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--primary-color);
+        color: white;
+        padding: 0.25rem 1rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
+      
+      .plan-name {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 0.5rem;
+      }
+      .plan-price {
+        font-size: 3rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: flex-start;
+      }
+      .plan-price span {
+        font-size: 1rem;
+        color: var(--text-light);
+        font-weight: 500;
+        margin-top: 0.5rem;
+      }
+      
+      .plan-features {
+        list-style: none;
+        margin-bottom: 2.5rem;
+        flex-grow: 1;
+      }
+      .plan-features li {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        color: var(--text-dark);
+        margin-bottom: 1rem;
+        font-size: 0.95rem;
+      }
+      .plan-features li i {
+        color: var(--primary-color);
+        margin-top: 4px;
+      }
+      
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        padding: 0.875rem 1.75rem;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all var(--transition-speed);
+        border: none;
+        cursor: pointer;
+        font-size: 1rem;
+      }
+      .btn-primary {
+        background: var(--accent-color);
+        color: white;
+      }
+      .btn-primary:hover {
+        background-color: #059669;
+        transform: translateY(-2px);
+      }
+      .btn-secondary {
+        background: var(--secondary-color-bg);
+        color: var(--text-dark);
+        border: 1px solid var(--border-color);
+      }
+      .btn-secondary:hover {
+        border-color: var(--primary-color);
+        color: var(--primary-color);
+      }
+      
+      .footer {
+        background: var(--text-dark);
+        color: #a0aec0;
+        padding: 2rem 1rem;
+        margin-top: auto;
+        text-align: center;
+        font-size: 0.9rem;
+      }
+      [data-theme="dark"] .footer {
+        background: #0f172a;
+      }
+      
+      .status-banner {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto 2rem;
+        background: rgba(20, 184, 166, 0.1);
+        border: 1px solid var(--primary-color);
+        border-radius: var(--border-radius);
+        padding: 1rem 1.5rem;
+        color: var(--text-dark);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-weight: 500;
+      }
+    </style>
+  </head>
+  <body data-theme="dark">
+    <nav class="navbar" id="navbar">
+      <div class="nav-container">
+        <a href="/" class="logo">Hair & Scalp AI</a>
+        <div style="display: flex; gap: 1rem; align-items: center;">
+          <a href="/predict" style="color: var(--text-dark); text-decoration: none; font-weight: 500;">Back to Dashboard</a>
+          <button class="theme-toggle" id="themeToggle">
+            <i class="fas fa-moon"></i>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <main style="flex-direction: column;">
+      
+      <div class="status-banner">
+        <div>
+          <i class="fas fa-chart-line" style="color: var(--primary-color); margin-right: 8px;"></i>
+          Current Plan: <strong>{{ request.user.subscription.plan.name|default:"Free Tier" }}</strong>
+        </div>
+        <div>
+          Scans Used: <strong>{{ request.user.subscription.scans_used|default:"0" }}</strong> / 
+          {% if request.user.subscription.plan.scan_limit == -1 %}
+            Unlimited
+          {% else %}
+            {{ request.user.subscription.plan.scan_limit|default:"5" }}
+          {% endif %}
+        </div>
+      </div>
+      
+      <div class="pricing-header">
+        <h1>Scale Your Practice</h1>
+        <p>Choose the right plan to power your diagnosis workflow. Upgrade anytime as your clinical needs grow.</p>
+      </div>
+
+      <div class="pricing-grid">
+        {% for plan in plans %}
+        <div class="pricing-card {% if plan.price > 0 and plan.price < 20 %}popular{% endif %}">
+          {% if plan.price > 0 and plan.price < 20 %}
+          <div class="popular-badge">Most Popular</div>
+          {% endif %}
+          
+          <div class="plan-name">{{ plan.name }}</div>
+          <div class="plan-price">${{ plan.price }}<span>/month</span></div>
+          
+          <ul class="plan-features">
+            <!-- Simulated split filter for features -->
+            {% for feature in plan.features.split|join:","|slice:"" %}{# Using simple client-side JS to split, Django cant split by comma easily without custom tags, so we send it raw and parse it or just rely on simple logic #}
+            <li><i class="fas fa-check-circle"></i> {{ plan.features }}</li>
+            {% endfor %}
+            <script>
+               /* Convert csv features to list, executed immediately for each */
+               (function() {
+                 let uls = document.querySelectorAll('.plan-features');
+                 let lastUl = uls[uls.length - 1];
+                 let rawFeatures = "{{ plan.features }}";
+                 lastUl.innerHTML = "";
+                 rawFeatures.split(",").forEach(feat => {
+                     lastUl.innerHTML += `<li><i class="fas fa-check-circle"></i> ${feat}</li>`;
+                 });
+               })();
+            </script>
+          </ul>
+          
+          {% if request.user.subscription.plan.id == plan.id %}
+            <button class="btn btn-secondary" disabled>Current Plan</button>
+          {% else %}
+            <button class="btn btn-primary" onclick="alert('Demo: Redirecting to Stripe checkout for {{ plan.name }}...')">
+              Subscribe Now <i class="fas fa-arrow-right" style="margin-left: 8px;"></i>
+            </button>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+    </main>
+
+    <footer class="footer">
+      <p>&copy; 2025 Hair & Scalp Disease Prediction. SaaS Architecture.</p>
+    </footer>
+
+    <script>
+      const themeToggle = document.getElementById("themeToggle");
+      const body = document.body;
+      themeToggle.addEventListener("click", () => {
+        const currentTheme = body.dataset.theme === "dark" ? "light" : "dark";
+        body.dataset.theme = currentTheme;
+        themeToggle.querySelector("i").className =
+          currentTheme === "dark" ? "fas fa-sun" : "fas fa-moon";
+      });
+    </script>
+  </body>
+</html>

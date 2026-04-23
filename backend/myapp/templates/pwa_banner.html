@@ -1,0 +1,31 @@
+{% load static %}
+<!-- PWA Install Banner -->
+<div class="install-banner" id="installBanner">
+  <div class="install-banner-content">
+    <img src="{% static 'icons/icon-192x192.png' %}" alt="App Icon" class="banner-icon">
+    <div class="install-banner-text">
+      <h3>Install Hair & Scalp AI</h3>
+      <p>Get the app experience with offline access</p>
+    </div>
+  </div>
+  <div class="install-banner-buttons">
+    <button class="install-btn" id="installButton">
+      <i class="fas fa-download"></i>
+      Install App
+    </button>
+    <button class="close-banner-btn" id="closeBanner">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+</div>
+
+<!-- iOS Install Prompt -->
+<div id="iosInstallPrompt">
+  <p>Install this app on your iPhone:</p>
+  <div class="ios-instructions">
+    Tap <i class="fas fa-share"></i> then "Add to Home Screen"
+  </div>
+</div>
+
+<!-- PWA Install Script -->
+<script src="{% static 'pwa-install.js' %}"></script>
