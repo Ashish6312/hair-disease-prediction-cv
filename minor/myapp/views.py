@@ -146,8 +146,20 @@ def result(request):
     request.session['last_activity'] = time.time()
     return render(request, 'result.html')
 
+def check_auth_status(request):
+    """Simple endpoint to check if user is authenticated and their plan"""
+    if request.user.is_authenticated:
+        subscription = getattr(request.user, 'subscription', None)
+        plan = subscription.plan_name if subscription else 'Free'
+        return JsonResponse({
+            'authenticated': True,
+            'username': request.user.username,
+            'plan': plan
+        })
+    return JsonResponse({'authenticated': False})
+
 @login_required(login_url='login')
-def profile(request):
+def profile_view(request):
     request.session['last_activity'] = time.time()
     if request.method == 'POST':
         username = request.POST.get('username')
