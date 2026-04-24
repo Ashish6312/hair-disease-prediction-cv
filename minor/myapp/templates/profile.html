@@ -19,7 +19,6 @@
             --accent-green: #10b981;
             --danger-red: #ef4444;
             --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
-            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
         }
 
         [data-theme="dark"] {
@@ -36,30 +35,30 @@
             background-color: var(--secondary-bg);
             color: var(--text-main);
             min-height: 100vh;
-            line-height: 1.5;
+            line-height: 1.4;
         }
 
         main {
-            padding: 8rem 1rem 4rem;
-            max-width: 1000px;
+            padding: 6rem 1rem 2rem;
+            max-width: 850px; /* Reduced from 1000px */
             margin: 0 auto;
         }
 
         .profile-grid {
             display: grid;
-            grid-template-columns: 350px 1fr;
-            gap: 2rem;
+            grid-template-columns: 280px 1fr; /* Narrower sidebar */
+            gap: 1.5rem;
         }
 
-        @media (max-width: 900px) {
+        @media (max-width: 768px) {
             .profile-grid { grid-template-columns: 1fr; }
         }
 
         .card {
             background: var(--card-bg);
-            border-radius: 16px;
+            border-radius: 12px;
             border: 1px solid var(--border-color);
-            padding: 2rem;
+            padding: 1.5rem; /* Reduced padding */
             box-shadow: var(--shadow-sm);
         }
 
@@ -68,112 +67,102 @@
         }
 
         .avatar-circle {
-            width: 120px;
-            height: 120px;
+            width: 80px; /* Smaller avatar */
+            height: 80px;
             background: linear-gradient(135deg, var(--primary-color), var(--accent-green));
             color: white;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 3.5rem;
-            margin: 0 auto 1.5rem;
-            box-shadow: 0 10px 20px rgba(20, 184, 166, 0.2);
+            font-size: 2.5rem;
+            margin: 0 auto 1rem;
         }
 
         .form-group {
-            margin-bottom: 1.25rem;
+            margin-bottom: 1rem;
             text-align: left;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.3rem;
             color: var(--text-muted);
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
 
         .form-group input {
             width: 100%;
-            padding: 0.75rem 1rem;
+            padding: 0.6rem 0.8rem;
             border: 1px solid var(--border-color);
-            border-radius: 10px;
+            border-radius: 8px;
             background: var(--secondary-bg);
             color: var(--text-main);
             font-family: inherit;
-            transition: border-color 0.2s;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: var(--primary-color);
+            font-size: 0.9rem;
         }
 
         .btn {
             width: 100%;
-            padding: 0.875rem;
-            border-radius: 10px;
+            padding: 0.7rem;
+            border-radius: 8px;
             border: none;
             background: var(--primary-color);
             color: white;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
+            font-size: 0.9rem;
         }
 
         .btn:hover {
             background: #0d9488;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(20, 184, 166, 0.2);
         }
 
         .subscription-badge {
             display: inline-block;
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 1px;
             background: rgba(20, 184, 166, 0.1);
             color: var(--primary-color);
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
         }
 
         .invoice-table {
             width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            margin-top: 1rem;
+            border-collapse: collapse;
+            margin-top: 0.5rem;
         }
 
         .invoice-table th {
             text-align: left;
             color: var(--text-muted);
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: 600;
             text-transform: uppercase;
-            padding: 1rem;
+            padding: 0.75rem;
             border-bottom: 1px solid var(--border-color);
         }
 
         .invoice-table td {
-            padding: 1rem;
-            font-size: 0.9rem;
+            padding: 0.75rem;
+            font-size: 0.85rem;
             border-bottom: 1px solid var(--border-color);
         }
 
         .status-pill {
-            padding: 0.2rem 0.6rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
             font-weight: 600;
         }
 
@@ -183,24 +172,22 @@
         }
 
         .section-title {
-            font-size: 1.25rem;
+            font-size: 1.1rem;
             font-weight: 700;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 0.5rem;
         }
 
         .alert {
-            padding: 1rem;
-            border-radius: 10px;
-            margin-bottom: 1.5rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
             text-align: center;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
         .alert-success { background: rgba(16, 185, 129, 0.1); color: var(--accent-green); }
-        .alert-error { background: rgba(239, 68, 68, 0.1); color: var(--danger-red); }
-
     </style>
 </head>
 <body data-theme="dark">
@@ -209,13 +196,12 @@
 
     <main>
         <div class="profile-grid">
-            <!-- Sidebar: User Info -->
             <aside class="card user-info-card">
                 <div class="avatar-circle">
                     <i class="fas fa-user"></i>
                 </div>
-                <h2 style="margin-bottom: 0.25rem;">{{ user.username }}</h2>
-                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">{{ user.email }}</p>
+                <h3 style="margin-bottom: 0.2rem;">{{ user.username }}</h3>
+                <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 1rem;">{{ user.email }}</p>
                 
                 {% if user.subscription %}
                     <span class="subscription-badge">{{ user.subscription.plan_name }} Plan</span>
@@ -223,68 +209,62 @@
                     <span class="subscription-badge" style="background: #f1f5f9; color: #64748b;">Free Tier</span>
                 {% endif %}
 
-                <form method="POST" style="margin-top: 2rem; border-top: 1px solid var(--border-color); padding-top: 2rem;">
+                <form method="POST" style="margin-top: 1.5rem; border-top: 1px solid var(--border-color); padding-top: 1.5rem;">
                     {% csrf_token %}
                     <div class="form-group">
-                        <label for="username">Display Name</label>
+                        <label for="username">Username</label>
                         <input type="text" id="username" name="username" value="{{ user.username }}" required>
                     </div>
                     <div class="form-group">
-                        <label for="email">Gmail Address</label>
+                        <label for="email">Gmail</label>
                         <input type="email" id="email" name="email" value="{{ user.email }}" required>
                     </div>
                     <button type="submit" class="btn">
-                        <i class="fas fa-save"></i> Save Changes
+                        Save
                     </button>
                 </form>
 
-                <div style="margin-top: 2rem;">
-                    <a href="/logout" style="color: var(--danger-red); text-decoration: none; font-size: 0.85rem; font-weight: 600;">
-                        <i class="fas fa-sign-out-alt"></i> Sign out
+                <div style="margin-top: 1.5rem;">
+                    <a href="/logout" style="color: var(--danger-red); text-decoration: none; font-size: 0.8rem; font-weight: 600;">
+                        Logout
                     </a>
                 </div>
             </aside>
 
-            <!-- Main Content: Billing & Invoices -->
             <section>
-                <div class="card" style="margin-bottom: 2rem;">
-                    <h3 class="section-title"><i class="fas fa-credit-card"></i> Subscription</h3>
+                <div class="card" style="margin-bottom: 1.5rem;">
+                    <h4 class="section-title"><i class="fas fa-credit-card"></i> Plan</h4>
                     
                     {% if user.subscription %}
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                             <div>
-                                <p style="color: var(--text-muted); font-size: 0.8rem; font-weight: 600; text-transform: uppercase;">Current Plan</p>
-                                <p style="font-size: 1.1rem; font-weight: 600;">{{ user.subscription.plan_name }}</p>
+                                <p style="color: var(--text-muted); font-size: 0.65rem; font-weight: 700; text-transform: uppercase;">Active Plan</p>
+                                <p style="font-size: 0.95rem; font-weight: 600;">{{ user.subscription.plan_name }}</p>
                             </div>
                             <div>
-                                <p style="color: var(--text-muted); font-size: 0.8rem; font-weight: 600; text-transform: uppercase;">Billing Cycle</p>
-                                <p style="font-size: 1.1rem; font-weight: 600;">Monthly (₹{{ user.subscription.price }})</p>
+                                <p style="color: var(--text-muted); font-size: 0.65rem; font-weight: 700; text-transform: uppercase;">Price</p>
+                                <p style="font-size: 0.95rem; font-weight: 600;">₹{{ user.subscription.price }}</p>
                             </div>
                             <div>
-                                <p style="color: var(--text-muted); font-size: 0.8rem; font-weight: 600; text-transform: uppercase;">Next Renewal</p>
-                                <p style="font-size: 1.1rem; font-weight: 600;">{{ user.subscription.activated_at|date:"M d, Y" }}</p>
-                            </div>
-                            <div>
-                                <p style="color: var(--text-muted); font-size: 0.8rem; font-weight: 600; text-transform: uppercase;">Status</p>
-                                <p><span class="status-pill status-paid" style="font-size: 0.9rem;">Active</span></p>
+                                <p style="color: var(--text-muted); font-size: 0.65rem; font-weight: 700; text-transform: uppercase;">Status</p>
+                                <p><span class="status-pill status-paid">Active</span></p>
                             </div>
                         </div>
                     {% else %}
-                        <div style="text-align: center; padding: 2rem;">
-                            <i class="fas fa-gem" style="font-size: 2.5rem; color: #e2e8f0; margin-bottom: 1rem; display: block;"></i>
-                            <p style="color: var(--text-muted); margin-bottom: 1.5rem;">You are currently on the Free plan.</p>
-                            <a href="/pricing" class="btn" style="width: auto; display: inline-flex; padding: 0.75rem 2rem;">Upgrade Now</a>
+                        <div style="text-align: center; padding: 1rem;">
+                            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">Free tier access.</p>
+                            <a href="/pricing" class="btn" style="width: auto; display: inline-flex; padding: 0.5rem 1.5rem;">Upgrade</a>
                         </div>
                     {% endif %}
                 </div>
 
                 <div class="card">
-                    <h3 class="section-title"><i class="fas fa-file-invoice"></i> Invoices</h3>
+                    <h4 class="section-title"><i class="fas fa-file-invoice"></i> Invoices</h4>
                     <div style="overflow-x: auto;">
                         <table class="invoice-table">
                             <thead>
                                 <tr>
-                                    <th>Invoice #</th>
+                                    <th>ID</th>
                                     <th>Date</th>
                                     <th>Amount</th>
                                     <th>Status</th>
@@ -293,16 +273,14 @@
                             <tbody>
                                 {% for invoice in user.invoices.all %}
                                     <tr>
-                                        <td style="font-family: monospace; font-weight: 600; color: var(--primary-color);">{{ invoice.invoice_number }}</td>
-                                        <td>{{ invoice.date|date:"M d, Y" }}</td>
+                                        <td style="font-family: monospace; font-weight: 600;">{{ invoice.invoice_number }}</td>
+                                        <td>{{ invoice.date|date:"M d" }}</td>
                                         <td>₹{{ invoice.amount }}</td>
                                         <td><span class="status-pill status-paid">Paid</span></td>
                                     </tr>
                                 {% empty %}
                                     <tr>
-                                        <td colspan="4" style="text-align: center; padding: 3rem; color: var(--text-muted);">
-                                            No transaction history available.
-                                        </td>
+                                        <td colspan="4" style="text-align: center; padding: 1rem; color: var(--text-muted);">No history.</td>
                                     </tr>
                                 {% endfor %}
                             </tbody>
