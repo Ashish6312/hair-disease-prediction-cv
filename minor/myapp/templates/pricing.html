@@ -232,7 +232,7 @@
         let currentPlan = '';
 
         function redirectToLogin() {
-            alert('Please login first to purchase a plan!');
+            showToast('Please login first to purchase a plan!', "info");
             window.location.href = '/login';
         }
 
@@ -265,16 +265,17 @@
                 
                 const result = await response.json();
                 if (result.success) {
-                    alert('🎉 Plan ' + currentPlan + ' activated successfully!');
-                    window.location.href = '/profile';
+                    showToast('Plan ' + currentPlan + ' activated successfully!', 'success');
+                    setTimeout(() => window.location.href = '/profile', 1500);
                 } else {
-                    alert('Error: ' + result.error);
+                    showToast('Error: ' + result.error, 'error');
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('An error occurred. Please try again.');
+                showToast('An error occurred. Please try again.', 'error');
             }
         }
+
 
     </script>
 </body>

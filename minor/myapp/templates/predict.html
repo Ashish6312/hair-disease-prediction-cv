@@ -766,7 +766,7 @@
         .getElementById("predictBtn")
         .addEventListener("click", async () => {
           if (!fileInput.files.length) {
-            alert("Please select an image first!");
+            showToast("Please select an image first!", "info");
             return;
           }
           const name = document.getElementById("clientName").value.trim();
@@ -774,7 +774,7 @@
           const contact = document.getElementById("clientContact").value.trim();
           const symptomStartDate = document.getElementById("symptomStartDate").value.trim();
           if (!name || !dob || !contact || !symptomStartDate) {
-            alert("Please fill out all client details including symptom start date!");
+            showToast("Please fill out all client details including symptom start date!", "info");
             return;
           }
 
@@ -800,7 +800,7 @@
             });
             const result = await response.json();
             if (result.error) {
-              alert(`Error: ${result.error}`);
+              showToast(`Error: ${result.error}`, "info");
             } else {
               localStorage.setItem("clientName", name);
               localStorage.setItem("clientDOB", dob);
@@ -811,7 +811,7 @@
               window.location.href = "/result";
             }
           } catch (error) {
-            alert(`An error occurred: ${error.message}`);
+            showToast(`An error occurred: ${error.message}`, "info");
           } finally {
             predictBtn.innerHTML = originalHTML;
             predictBtn.disabled = false;
@@ -953,7 +953,7 @@
               })
               .catch(error => {
                 console.error('Error loading captured image:', error);
-                alert('Error loading captured image. Please try again.');
+                showToast('Error loading captured image. Please try again.', "info");
                 
                 // Clear storage on error
                 sessionStorage.removeItem('capturedImage');
@@ -965,7 +965,7 @@
               });
           } catch (error) {
             console.error('Error processing captured image:', error);
-            alert('Error processing captured image. Please try again.');
+            showToast('Error processing captured image. Please try again.', "info");
           }
         } else {
           console.log('No captured image found');
