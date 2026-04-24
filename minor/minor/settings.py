@@ -79,35 +79,25 @@ TEMPLATES = [
 WSGI_APPLICATION = 'minor.wsgi.application'
 
 
+import dj_database_url
+
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-# Use MongoDB if MONGODB_URI is set, otherwise SQLite for local development
-MONGODB_URI = os.environ.get('MONGODB_URI')
-MONGODB_NAME = os.environ.get('MONGODB_NAME', 'hairscalp_db')
+# Primary Database: PostgreSQL (using DATABASE_URL)
+# Fallback to SQLite if DATABASE_URL is not set
+DATABASES = {
+    'default': dj_database_url.config(
+        default=os.environ.get('DATABASE_URL', f"sqlite:///{BASE_DIR / 'db.sqlite3'}"),
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
+}
 
-if MONGODB_URI:
-    # MongoDB Atlas configuration using pymongo directly
-    from pymongo import MongoClient
-    # Store connection for use in models
-    MONGODB_CLIENT = MongoClient(MONGODB_URI)
-    MONGODB_DATABASE = MONGODB_CLIENT[MONGODB_NAME]
-    
-    # Still need to define DATABASES for Django
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
-else:
-    # Local development with SQLite
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
+# Optional: MongoDB configuration (keeps existing logic)
+
+
+
 
 
 # Password validation

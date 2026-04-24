@@ -1,0 +1,26 @@
+[project]
+name = "hair-scalp-detector"
+version = "1.0.0"
+description = "Hair and Scalp Disease Prediction System"
+dependencies = [
+    "torch==2.2.2",
+    "torchvision==0.17.2",
+    "numpy>=1.26.4,<2.0",
+    "Pillow==10.1.0",
+    "Django==5.2.5",
+    "djangorestframework==3.14.0",
+    "django-cors-headers==4.3.1",
+    "gunicorn==21.2.0",
+    "whitenoise==6.6.0",
+    "pymongo==4.6.1",
+    "dnspython==2.4.2",
+    "python-dotenv==1.0.1",
+    "dj-database-url==2.1.0"
+]
+
+[tool.setuptools]
+packages = ["minor"]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
