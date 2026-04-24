@@ -14,10 +14,13 @@ services:
       - key: SECRET_KEY
         generateValue: true
       - key: DJANGO_SETTINGS_MODULE
-        value: minor.settings_production
+        value: minor.settings
       - key: WEB_CONCURRENCY
         value: 1
       - key: DEBUG
         value: False
       - key: ALLOWED_HOSTS
         value: .onrender.com
+      - key: DATABASE_URL
+        sync: false
+
