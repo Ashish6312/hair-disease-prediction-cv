@@ -821,16 +821,23 @@
 
     <nav class="navbar" id="navbar">
       <div class="nav-container">
-        <div class="logo">Hair & Scalp AI</div>
+        <a href="/" class="logo" style="text-decoration: none;">Hair & Scalp AI</a>
         <ul class="nav-links">
           <li><a href="#home">Home</a></li>
           <li><a href="#features">Features</a></li>
+          <li><a href="/pricing">Pricing</a></li>
           <li><a href="#team">Team</a></li>
           <li><a href="#contact">Contact</a></li>
-          <li id="authStatus" style="display: none">
-            <span id="userInfo"></span>
-            <a href="/logout">Logout</a>
+          
+          {% if user.is_authenticated %}
+          <li id="authStatus">
+            <span id="userInfo" style="color: var(--primary-color); font-weight: 600; margin-right: 10px;">{{ user.username }}</span>
+            <a href="/predict" style="background: rgba(20, 184, 166, 0.1); padding: 5px 15px; border-radius: 20px;">Dashboard</a>
+            <a href="/logout" style="color: var(--error-color); margin-left: 10px;">Logout</a>
           </li>
+          {% else %}
+          <li><a href="/login" class="cta-button" style="padding: 0.5rem 1.5rem; font-size: 0.9rem;">Login</a></li>
+          {% endif %}
         </ul>
         <div class="nav-actions">
           {% include 'pwa_banner.html' %}
