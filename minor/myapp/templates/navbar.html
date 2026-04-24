@@ -1,0 +1,108 @@
+<nav class="navbar" id="navbar">
+  <div class="nav-container">
+    <a href="/" class="logo" style="text-decoration: none;">Hair & Scalp AI</a>
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/disease_info">Diseases</a></li>
+      <li><a href="/pricing">Pricing</a></li>
+      <li><a href="/appointment">Appointment</a></li>
+      
+      {% if user.is_authenticated %}
+      <li id="authStatus">
+        <span id="userInfo" style="color: var(--primary-color); font-weight: 600; margin-right: 10px;">{{ user.username }}</span>
+        <a href="/profile" style="background: rgba(20, 184, 166, 0.1); padding: 5px 15px; border-radius: 20px; text-decoration: none; margin-right: 10px;">Profile</a>
+        <a href="/predict" style="background: rgba(20, 184, 166, 0.1); padding: 5px 15px; border-radius: 20px; text-decoration: none;">Dashboard</a>
+        <a href="/logout" style="color: var(--error-color); margin-left: 10px; text-decoration: none;">Logout</a>
+
+      </li>
+      {% else %}
+      <li><a href="/login" class="cta-button" style="padding: 0.5rem 1.5rem; font-size: 0.9rem; text-decoration: none; color: white; background: var(--primary-color); border-radius: 25px;">Login</a></li>
+      {% endif %}
+    </ul>
+    <div class="nav-actions">
+      <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+        <i class="fas fa-moon"></i>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<style>
+  .navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border-color, #e5e7eb);
+    transition: all 0.3s ease;
+  }
+  [data-theme="dark"] .navbar {
+    background: rgba(31, 41, 55, 0.8);
+    border-bottom-color: #374151;
+  }
+  .nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1rem;
+  }
+  .nav-links {
+    display: flex;
+    list-style: none;
+    gap: 1.5rem;
+    align-items: center;
+  }
+  .nav-links a {
+    text-decoration: none;
+    color: var(--text-dark, #1f2937);
+    font-weight: 500;
+    transition: color 0.3s ease;
+  }
+  .nav-links a:hover {
+    color: var(--primary-color, #14b8a6);
+  }
+  .theme-toggle {
+    background: var(--white-color, #fff);
+    border: 1px solid var(--border-color, #e5e7eb);
+    color: var(--text-light, #6b7280);
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  [data-theme="dark"] {
+    --text-dark: #f3f4f6;
+    --white-color: #1f2937;
+  }
+</style>
+
+<script>
+  function toggleTheme() {
+    const body = document.body;
+    const currentTheme = body.dataset.theme === "dark" ? "light" : "dark";
+    body.dataset.theme = currentTheme;
+    const icon = document.querySelector("#themeToggle i");
+    if (icon) {
+      icon.className = currentTheme === "dark" ? "fas fa-sun" : "fas fa-moon";
+    }
+    localStorage.setItem("theme", currentTheme);
+  }
+  
+  // Set theme on load
+  document.addEventListener('DOMContentLoaded', () => {
+    const savedTheme = localStorage.getItem("theme") || "dark";
+    document.body.dataset.theme = savedTheme;
+    const icon = document.querySelector("#themeToggle i");
+    if (icon) {
+      icon.className = savedTheme === "dark" ? "fas fa-sun" : "fas fa-moon";
+    }
+  });
+</script>

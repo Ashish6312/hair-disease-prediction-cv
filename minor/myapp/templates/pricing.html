@@ -169,21 +169,7 @@
 </head>
 <body data-theme="dark">
 
-    <nav class="navbar">
-        <div class="nav-container">
-            <a href="/" class="logo">Hair & Scalp AI</a>
-            <ul class="nav-links">
-                <li><a href="/">Home</a></li>
-                <li><a href="/pricing">Pricing</a></li>
-                {% if user.is_authenticated %}
-                <li><a href="/predict">Predict</a></li>
-                <li><a href="#" class="btn-login"><i class="fas fa-user"></i> Profile</a></li>
-                {% else %}
-                <li><a href="/login" class="btn-login">Login</a></li>
-                {% endif %}
-            </ul>
-        </div>
-    </nav>
+    {% include 'navbar.html' %}
 
     <section class="pricing-section">
         <h1 class="section-title">Ready to Transform Your Hair Health?</h1>
@@ -193,7 +179,7 @@
             <!-- Free Plan -->
             <div class="pricing-card">
                 <div class="plan-name">Free</div>
-                <div class="plan-price">$0<span>/month</span></div>
+                <div class="plan-price">₹0<span>/month</span></div>
                 <ul class="features-list">
                     <li><i class="fas fa-check"></i> 3 AI Predictions / month</li>
                     <li><i class="fas fa-check"></i> Basic Hair Health Guide</li>
@@ -206,7 +192,7 @@
             <div class="pricing-card popular">
                 <div class="popular-badge">MOST POPULAR</div>
                 <div class="plan-name">Starter</div>
-                <div class="plan-price">$19<span>/month</span></div>
+                <div class="plan-price">₹1,499<span>/month</span></div>
                 <ul class="features-list">
                     <li><i class="fas fa-check"></i> Unlimited AI Predictions</li>
                     <li><i class="fas fa-check"></i> Personalized Treatment Plans</li>
@@ -218,7 +204,7 @@
             <!-- Pro Plan -->
             <div class="pricing-card">
                 <div class="plan-name">Pro</div>
-                <div class="plan-price">$49<span>/month</span></div>
+                <div class="plan-price">₹3,999<span>/month</span></div>
                 <ul class="features-list">
                     <li><i class="fas fa-check"></i> Priority Specialist Consultation</li>
                     <li><i class="fas fa-check"></i> Advanced Lab Reports Analysis</li>
@@ -260,10 +246,36 @@
             document.getElementById('purchaseModal').style.display = 'none';
         }
 
-        function confirmPurchase() {
-            alert('🎉 Plan ' + currentPlan + ' activated successfully!');
-            window.location.href = '/predict';
+        async function confirmPurchase() {
+            const priceMap = { 'Free': 0, 'Starter': 1499, 'Pro': 3999 };
+            const price = priceMap[currentPlan];
+            
+            try {
+                const response = await fetch('/activate-plan', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({
+                        plan_name: currentPlan,
+                        price: price
+                    })
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    alert('🎉 Plan ' + currentPlan + ' activated successfully!');
+                    window.location.href = '/profile';
+                } else {
+                    alert('Error: ' + result.error);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            }
         }
+
     </script>
 </body>
 </html>

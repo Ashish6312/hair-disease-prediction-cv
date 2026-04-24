@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from django.contrib import messages
-from myapp.models import User
+from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate, logout
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from .forms import CustomUserCreationForm, EmailAuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.core.files.storage import default_storage
@@ -55,38 +55,38 @@ def page10(request):
 
 def register(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            login(request, user)
+            login(request, user, backend='myapp.backends.EmailBackend')
             messages.success(request, 'Registration successful. Welcome!')
             return redirect('login')  # Redirect to a home page or dashboard
         else:
             # The form will automatically pass errors to the template
             messages.error(request, 'Unsuccessful registration. Invalid information.')
     else:
-        form = UserCreationForm()
+        form = CustomUserCreationForm()
     return render(request, 'register.html', {'form': form})
 
 def login_view(request):
     if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
+        form = EmailAuthenticationForm(request, data=request.POST)
         if form.is_valid():
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
             user = authenticate(username=username, password=password)
             if user is not None:
-                login(request, user)
+                login(request, user, backend='myapp.backends.EmailBackend')
                 # Set session start time for timeout tracking
                 request.session['last_activity'] = time.time()
-                messages.info(request, f"You are now logged in as {username}. Your session will expire in 30 minutes.")
+                messages.info(request, f"You are now logged in. Your session will expire in 30 minutes.")
                 return redirect('predict') # Redirect to a home page or dashboard
             else:
-                messages.error(request, "Invalid username or password.")
+                messages.error(request, "Invalid Gmail or password.")
         else:
-            messages.error(request, "Invalid username or password.")
+            messages.error(request, "Invalid Gmail or password.")
     else:
-        form = AuthenticationForm()
+        form = EmailAuthenticationForm()
     return render(request, 'login.html', {'form': form})
 
 def logout_view(request):
@@ -156,3 +156,52 @@ def check_auth_status(request):
 
 def pricing(request):
     return render(request, 'pricing.html')
+@login_required(login_url='login')
+def profile_view(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        if username and email:
+            try:
+                request.user.username = username
+                request.user.email = email
+                request.user.save()
+                messages.success(request, 'Profile updated successfully!')
+            except Exception as e:
+                messages.error(request, f'Error updating profile: {str(e)}')
+        else:
+            messages.error(request, 'Username and Email are required.')
+        return redirect('profile')
+    return render(request, 'profile.html')
+
+@login_required(login_url='login')
+def activate_plan(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        plan_name = data.get('plan_name')
+        price = data.get('price')
+        
+        # Update or create subscription
+        from .models import Subscription, Invoice
+        import uuid
+        
+        subscription, created = Subscription.objects.update_or_create(
+            user=request.user,
+            defaults={
+                'plan_name': plan_name,
+                'price': price,
+                'is_active': True
+            }
+        )
+        
+        # Create invoice
+        invoice_num = f'INV-{uuid.uuid4().hex[:8].upper()}'
+        Invoice.objects.create(
+            user=request.user,
+            subscription=subscription,
+            invoice_number=invoice_num,
+            amount=price
+        )
+        
+        return JsonResponse({'success': True, 'plan': plan_name})
+    return JsonResponse({'success': False, 'error': 'Invalid request'})
