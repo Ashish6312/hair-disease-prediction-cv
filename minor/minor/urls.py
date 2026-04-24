@@ -46,6 +46,10 @@ urlpatterns = [
     path('result', views.result, name='result'),
     path('check-auth', views.check_auth_status, name='check_auth'),
     path('pricing', views.pricing, name='pricing'),
+    path('profile', views.profile_view, name='profile'),
+    path('activate-plan', views.activate_plan, name='activate_plan'),
+
+
     path('admin/', admin.site.urls),
     # Handle Chrome DevTools requests silently
     re_path(r'^\.well-known/.*', chrome_devtools_handler),

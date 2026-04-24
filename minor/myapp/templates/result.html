@@ -624,20 +624,7 @@
     </style>
   </head>
   <body data-theme="dark">
-    <nav class="navbar" id="navbar">
-      <div class="nav-container">
-        <a href="/" class="logo">Hair & Scalp AI</a>
-        <ul class="nav-links">
-          <li><a href="/">Home</a></li>
-          <li><a href="/diseasetype.html">Explore Diseases</a></li>
-          <li><a href="/find-specialist.html">Find a Specialist</a></li>
-          <li><a href="/logout" class="logout-btn">Logout</a></li>
-        </ul>
-        <button class="theme-toggle" id="themeToggle">
-          <i class="fas fa-moon"></i>
-        </button>
-      </div>
-    </nav>
+        {% include "navbar.html" %}
 
     <!-- Session timeout warning -->
     <div id="sessionWarning" class="session-warning">
@@ -843,11 +830,17 @@
         if (stageInfo && stageInfo.stage && predictionData.predicted_class !== "No Disease") {
           console.log("Stage info found:", stageInfo);
           document.getElementById("stageInfo").classList.remove("hidden");
+          if (stageInfo.stage === "Invalid Date") {
+            document.getElementById("diseaseStage").style.color = "var(--error-color)";
+            document.getElementById("stageSeverity").style.color = "var(--error-color)";
+            document.getElementById("stageProgression").style.color = "var(--error-color)";
+          }
           document.getElementById("diseaseStage").textContent = stageInfo.stage || "-";
           document.getElementById("stageSeverity").textContent = stageInfo.severity || "-";
-          document.getElementById("stageDuration").textContent = stageInfo.days_elapsed ? `${stageInfo.days_elapsed} days` : "-";
+          document.getElementById("stageDuration").textContent = stageInfo.days_elapsed >= 0 ? `${stageInfo.days_elapsed} days` : "-";
           document.getElementById("stageProgression").textContent = stageInfo.progression_rate || "-";
           document.getElementById("stageDescription").textContent = stageInfo.clinical_notes || "No additional assessment available.";
+
         } else {
           console.log("No stage info available or No Disease detected");
         }
@@ -1212,3 +1205,5 @@
 
   </body>
 </html>
+
+

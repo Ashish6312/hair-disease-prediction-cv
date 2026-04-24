@@ -57,10 +57,10 @@ class MLModelService:
             if not os.path.exists(model_path):
                 raise FileNotFoundError(f"Model file not found at {model_path}")
 
-            print(f"🖥️ Using device: {self.device}")
-            print(f"📂 Loading model from: {model_path}")
-            print(f"🔢 Number of classes: {len(self.class_names)}")
-            print(f"🏷️ Classes: {self.class_names}")
+            print(f" Using device: {self.device}")
+            print(f" Loading model from: {model_path}")
+            print(f" Number of classes: {len(self.class_names)}")
+            print(f" Classes: {self.class_names}")
 
             # Load ResNet50 architecture (matching your test code)
             model = models.resnet50(weights=None)
@@ -73,11 +73,11 @@ class MLModelService:
 
             self.model = model.to(self.device)
             self.model.eval()
-            print(f"✅ PyTorch model loaded successfully on {self.device}")
-            print(f"✅ Model ready to predict {len(self.class_names)} classes including 'No Disease'")
+            print(f" PyTorch model loaded successfully on {self.device}")
+            print(f" Model ready to predict {len(self.class_names)} classes including 'No Disease'")
 
         except Exception as e:
-            print(f"❌ Error loading PyTorch model: {str(e)}")
+            print(f" Error loading PyTorch model: {str(e)}")
             import traceback
             traceback.print_exc()
             self.model = None
@@ -134,7 +134,7 @@ class MLModelService:
             return stage_info
                 
         except Exception as e:
-            print(f"❌ Error calculating stage: {str(e)}")
+            print(f" Error calculating stage: {str(e)}")
             return {
                 "stage": "Unknown",
                 "stage_number": None,
@@ -238,11 +238,11 @@ class MLModelService:
         # Adjust based on confidence level
         confidence_note = ""
         if confidence >= 0.95:
-            confidence_note = "AI confidence: Very High (≥95%)."
+            confidence_note = "AI confidence: Very High (95%)."
         elif confidence >= 0.85:
-            confidence_note = "AI confidence: High (≥85%)."
+            confidence_note = "AI confidence: High (85%)."
         elif confidence >= 0.70:
-            confidence_note = "AI confidence: Moderate (≥70%)."
+            confidence_note = "AI confidence: Moderate (70%)."
         else:
             confidence_note = "AI confidence: Lower (<70%). Clinical verification recommended."
             severity = severity + " (Uncertain)"
@@ -266,10 +266,10 @@ class MLModelService:
         try:
             # Open and preprocess image
             img = Image.open(image_file).convert("RGB")
-            print(f"📸 Image loaded: {img.size}")
+            print(f" Image loaded: {img.size}")
             
             img_tensor = self.transform(img).unsqueeze(0).to(self.device)
-            print(f"🔄 Image tensor shape: {img_tensor.shape}")
+            print(f" Image tensor shape: {img_tensor.shape}")
 
             # Inference
             with torch.no_grad():
@@ -280,11 +280,11 @@ class MLModelService:
             predicted_class = self.class_names[pred.item()]
             confidence = float(conf.item())
             
-            print(f"🎯 Prediction: {predicted_class} (confidence: {confidence:.3f})")
+            print(f" Prediction: {predicted_class} (confidence: {confidence:.3f})")
             
             # Get top 3 predictions for debugging
             top3_probs, top3_indices = torch.topk(probs, 3)
-            print("📊 Top 3 predictions:")
+            print(" Top 3 predictions:")
             for i in range(3):
                 class_name = self.class_names[top3_indices[0][i].item()]
                 prob = top3_probs[0][i].item()
@@ -294,10 +294,10 @@ class MLModelService:
             stage_info = self.calculate_disease_stage(predicted_class, confidence, symptom_start_date)
             
             if stage_info and stage_info.get("stage"):
-                print(f"📈 Disease stage: {stage_info['stage']} (Severity: {stage_info['severity']})")
-                print(f"📊 Stage details: {stage_info['clinical_notes']}")
+                print(f" Disease stage: {stage_info['stage']} (Severity: {stage_info['severity']})")
+                print(f" Stage details: {stage_info['clinical_notes']}")
             else:
-                print(f"ℹ️ No stage calculation (predicted: {predicted_class})")
+                print(f" No stage calculation (predicted: {predicted_class})")
 
             result = {
                 "predicted_class": predicted_class,
@@ -307,14 +307,15 @@ class MLModelService:
                 "success": True
             }
             
-            print(f"✅ Prediction successful")
+            print(f" Prediction successful")
             return result
 
         except Exception as e:
-            print(f"❌ Error during prediction: {str(e)}")
+            print(f" Error during prediction: {str(e)}")
             import traceback
             traceback.print_exc()
             return {"error": f"Prediction failed: {str(e)}", "success": False}
 
 # Global instance
 ml_service = MLModelService()
+

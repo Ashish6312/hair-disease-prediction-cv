@@ -513,20 +513,7 @@
     </style>
   </head>
   <body data-theme="dark">
-    <nav class="navbar" id="navbar">
-      <div class="nav-container">
-        <a href="/" class="logo">Hair & Scalp AI</a>
-        <ul class="nav-links">
-          <li><a href="/">Home</a></li>
-          <li><a href="disease_info">Explore Diseases</a></li>
-          <li><a href="appointment">Find a Specialist</a></li>
-          <li><a href="/logout" class="logout-btn">Logout</a></li>
-        </ul>
-        <button class="theme-toggle" id="themeToggle">
-          <i class="fas fa-moon"></i>
-        </button>
-      </div>
-    </nav>
+        {% include "navbar.html" %}
 
     <!-- Session timeout warning -->
     <div id="sessionWarning" class="session-warning">
@@ -688,6 +675,12 @@
       });
 
       // --- PAGE-SPECIFIC SCRIPTS ---
+      const today = new Date().toISOString().split('T')[0];
+      const dobInput = document.getElementById('clientDOB');
+      const symptomInput = document.getElementById('symptomStartDate');
+      if (dobInput) dobInput.setAttribute('max', today);
+      if (symptomInput) symptomInput.setAttribute('max', today);
+
       const fileInput = document.getElementById("fileInput");
       const previewImage = document.getElementById("previewImage");
       const previewContainer = document.getElementById("previewContainer");
@@ -1007,3 +1000,4 @@
 
   </body>
 </html>
+
