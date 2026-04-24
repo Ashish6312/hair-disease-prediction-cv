@@ -15,12 +15,12 @@
 
     <div class="nav-actions">
       {% if user.is_authenticated %}
-      <div class="user-dropdown">
-        <button class="dropdown-trigger">
+      <div class="user-dropdown" id="userDropdown">
+        <button class="dropdown-trigger" id="dropdownTrigger">
           <span class="user-name">{{ user.username }}</span>
           <i class="fas fa-chevron-down"></i>
         </button>
-        <div class="dropdown-menu">
+        <div class="dropdown-menu" id="dropdownMenu">
           <a href="/profile"><i class="fas fa-user-circle"></i> Profile</a>
           <a href="/predict"><i class="fas fa-chart-line"></i> Dashboard</a>
           <div class="dropdown-divider"></div>
@@ -146,12 +146,12 @@
     width: 180px;
     padding: 0.5rem;
     box-shadow: var(--dropdown-shadow);
-    display: none;
+    display: none; /* Changed from hover to JS controlled */
     flex-direction: column;
     animation: slideIn 0.2s ease-out;
   }
 
-  .user-dropdown:hover .dropdown-menu {
+  .dropdown-menu.show {
     display: flex;
   }
 
@@ -186,42 +186,6 @@
   .logout-link:hover {
     background: rgba(239, 68, 68, 0.1) !important;
     color: #ef4444 !important;
-  }
-
-  .login-btn {
-    background: #14b8a6;
-    color: white;
-    padding: 0.5rem 1.5rem;
-    border-radius: 50px;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 0.9rem;
-    transition: all 0.3s ease;
-  }
-
-  .login-btn:hover {
-    background: #0d9488;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(20, 184, 166, 0.3);
-  }
-
-  .theme-toggle {
-    background: var(--dropdown-bg);
-    border: 1px solid var(--nav-border);
-    color: var(--nav-text);
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-  }
-
-  .theme-toggle:hover {
-    border-color: var(--nav-hover);
-    color: var(--nav-hover);
   }
 
   /* Toast Styles */
@@ -264,6 +228,42 @@
   .toast-error i { color: #ef4444; }
   .toast-info i { color: #3b82f6; }
 
+  .login-btn {
+    background: #14b8a6;
+    color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+  }
+
+  .login-btn:hover {
+    background: #0d9488;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(20, 184, 166, 0.3);
+  }
+
+  .theme-toggle {
+    background: var(--dropdown-bg);
+    border: 1px solid var(--nav-border);
+    color: var(--nav-text);
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+
+  .theme-toggle:hover {
+    border-color: var(--nav-hover);
+    color: var(--nav-hover);
+  }
+
   @media (max-width: 768px) {
     .nav-main { display: none; }
     .toast-container { right: 1rem; left: 1rem; top: 1rem; }
@@ -274,6 +274,25 @@
 <div class="toast-container" id="toastContainer"></div>
 
 <script>
+  // Dropdown Logic
+  document.addEventListener('DOMContentLoaded', () => {
+    const trigger = document.getElementById('dropdownTrigger');
+    const menu = document.getElementById('dropdownMenu');
+    
+    if (trigger && menu) {
+      trigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        menu.classList.toggle('show');
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!trigger.contains(e.target) && !menu.contains(e.target)) {
+          menu.classList.remove('show');
+        }
+      });
+    }
+  });
+
   function showToast(message, type = 'success') {
     const container = document.getElementById('toastContainer');
     const toast = document.createElement('div');
