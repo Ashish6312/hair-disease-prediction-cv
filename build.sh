@@ -14,10 +14,10 @@ cd minor
 
 # Collect static files
 echo "==> Collecting static files..."
-python manage.py collectstatic --no-input --settings=minor.settings_production
+python manage.py collectstatic --no-input --settings=minor.settings
 
 # Run migrations
 echo "==> Running database migrations..."
-python manage.py migrate --no-input --settings=minor.settings_production
+python manage.py migrate --no-input --settings=minor.settings
 
 echo "==> Build completed successfully!"
