@@ -1,26 +1,37 @@
 <nav class="navbar" id="navbar">
   <div class="nav-container">
-    <a href="/" class="logo" style="text-decoration: none;">Hair & Scalp AI</a>
-    <ul class="nav-links">
-      <li><a href="/">Home</a></li>
-      <li><a href="/disease_info">Diseases</a></li>
-      <li><a href="/pricing">Pricing</a></li>
-      <li><a href="/appointment">Appointment</a></li>
-      
-      {% if user.is_authenticated %}
-      <li id="authStatus">
-        <span id="userInfo" style="color: var(--primary-color); font-weight: 600; margin-right: 10px;">{{ user.username }}</span>
-        <a href="/profile" style="background: rgba(20, 184, 166, 0.1); padding: 5px 15px; border-radius: 20px; text-decoration: none; margin-right: 10px;">Profile</a>
-        <a href="/predict" style="background: rgba(20, 184, 166, 0.1); padding: 5px 15px; border-radius: 20px; text-decoration: none;">Dashboard</a>
-        <a href="/logout" style="color: var(--error-color); margin-left: 10px; text-decoration: none;">Logout</a>
+    <a href="/" class="logo">
+      <i class="fas fa-stethoscope"></i> Hair & Scalp AI
+    </a>
+    
+    <div class="nav-main">
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/disease_info">Diseases</a></li>
+        <li><a href="/pricing">Pricing</a></li>
+        <li><a href="/appointment">Appointment</a></li>
+      </ul>
+    </div>
 
-      </li>
-      {% else %}
-      <li><a href="/login" class="cta-button" style="padding: 0.5rem 1.5rem; font-size: 0.9rem; text-decoration: none; color: white; background: var(--primary-color); border-radius: 25px;">Login</a></li>
-      {% endif %}
-    </ul>
     <div class="nav-actions">
-      <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+      {% if user.is_authenticated %}
+      <div class="user-dropdown">
+        <button class="dropdown-trigger">
+          <span class="user-name">{{ user.username }}</span>
+          <i class="fas fa-chevron-down"></i>
+        </button>
+        <div class="dropdown-menu">
+          <a href="/profile"><i class="fas fa-user-circle"></i> Profile</a>
+          <a href="/predict"><i class="fas fa-chart-line"></i> Dashboard</a>
+          <div class="dropdown-divider"></div>
+          <a href="/logout" class="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+      </div>
+      {% else %}
+      <a href="/login" class="login-btn">Login</a>
+      {% endif %}
+      
+      <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle Theme">
         <i class="fas fa-moon"></i>
       </button>
     </div>
@@ -28,59 +39,193 @@
 </nav>
 
 <style>
+  :root {
+    --nav-bg: rgba(255, 255, 255, 0.85);
+    --nav-border: #e5e7eb;
+    --nav-text: #374151;
+    --nav-hover: #14b8a6;
+    --dropdown-bg: #ffffff;
+    --dropdown-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  }
+
+  [data-theme="dark"] {
+    --nav-bg: rgba(17, 24, 39, 0.85);
+    --nav-border: #374151;
+    --nav-text: #f3f4f6;
+    --dropdown-bg: #1f2937;
+  }
+
   .navbar {
     position: fixed;
     top: 0;
     width: 100%;
-    background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(10px);
+    background: var(--nav-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     z-index: 1000;
-    padding: 1rem 0;
-    border-bottom: 1px solid var(--border-color, #e5e7eb);
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--nav-border);
     transition: all 0.3s ease;
   }
-  [data-theme="dark"] .navbar {
-    background: rgba(31, 41, 55, 0.8);
-    border-bottom-color: #374151;
-  }
+
   .nav-container {
     max-width: 1200px;
     margin: 0 auto;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 1rem;
+    padding: 0 1.5rem;
   }
+
+  .logo {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #14b8a6;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
   .nav-links {
     display: flex;
     list-style: none;
-    gap: 1.5rem;
+    gap: 2rem;
     align-items: center;
   }
+
   .nav-links a {
     text-decoration: none;
-    color: var(--text-dark, #1f2937);
+    color: var(--nav-text);
     font-weight: 500;
-    transition: color 0.3s ease;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
   }
+
   .nav-links a:hover {
-    color: var(--primary-color, #14b8a6);
+    color: var(--nav-hover);
   }
+
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+  }
+
+  /* Dropdown Styles */
+  .user-dropdown {
+    position: relative;
+  }
+
+  .dropdown-trigger {
+    background: rgba(20, 184, 166, 0.1);
+    border: 1px solid rgba(20, 184, 166, 0.2);
+    color: #14b8a6;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+  }
+
+  .dropdown-trigger:hover {
+    background: rgba(20, 184, 166, 0.15);
+  }
+
+  .dropdown-menu {
+    position: absolute;
+    top: calc(100% + 0.75rem);
+    right: 0;
+    background: var(--dropdown-bg);
+    border: 1px solid var(--nav-border);
+    border-radius: 12px;
+    width: 180px;
+    padding: 0.5rem;
+    box-shadow: var(--dropdown-shadow);
+    display: none;
+    flex-direction: column;
+    animation: slideIn 0.2s ease-out;
+  }
+
+  .user-dropdown:hover .dropdown-menu {
+    display: flex;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .dropdown-menu a {
+    text-decoration: none;
+    color: var(--nav-text);
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: background 0.2s;
+  }
+
+  .dropdown-menu a:hover {
+    background: rgba(20, 184, 166, 0.1);
+    color: var(--nav-hover);
+  }
+
+  .dropdown-divider {
+    height: 1px;
+    background: var(--nav-border);
+    margin: 0.4rem 0.5rem;
+  }
+
+  .logout-link:hover {
+    background: rgba(239, 68, 68, 0.1) !important;
+    color: #ef4444 !important;
+  }
+
+  .login-btn {
+    background: #14b8a6;
+    color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+  }
+
+  .login-btn:hover {
+    background: #0d9488;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(20, 184, 166, 0.3);
+  }
+
   .theme-toggle {
-    background: var(--white-color, #fff);
-    border: 1px solid var(--border-color, #e5e7eb);
-    color: var(--text-light, #6b7280);
-    width: 35px;
-    height: 35px;
+    background: var(--dropdown-bg);
+    border: 1px solid var(--nav-border);
+    color: var(--nav-text);
+    width: 38px;
+    height: 38px;
     border-radius: 50%;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: all 0.2s;
   }
-  [data-theme="dark"] {
-    --text-dark: #f3f4f6;
-    --white-color: #1f2937;
+
+  .theme-toggle:hover {
+    border-color: var(--nav-hover);
+    color: var(--nav-hover);
+  }
+
+  @media (max-width: 768px) {
+    .nav-main { display: none; }
   }
 </style>
 
