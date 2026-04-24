@@ -153,3 +153,6 @@ def check_auth_status(request):
         return JsonResponse({'authenticated': True, 'username': request.user.username})
     else:
         return JsonResponse({'authenticated': False})
+
+def pricing(request):
+    return render(request, 'pricing.html')

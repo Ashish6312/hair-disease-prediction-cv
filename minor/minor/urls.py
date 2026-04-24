@@ -45,6 +45,7 @@ urlpatterns = [
     path('predict-api', views.predict_api, name='predict_api'),
     path('result', views.result, name='result'),
     path('check-auth', views.check_auth_status, name='check_auth'),
+    path('pricing', views.pricing, name='pricing'),
     path('admin/', admin.site.urls),
     # Handle Chrome DevTools requests silently
     re_path(r'^\.well-known/.*', chrome_devtools_handler),
