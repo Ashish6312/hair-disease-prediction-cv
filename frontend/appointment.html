@@ -447,7 +447,347 @@
     </style>
   </head>
   <body data-theme="dark">
-        {% include "navbar.html" %}
+        <nav class="navbar" id="navbar">
+  <div class="nav-container">
+    <a href="/" class="logo">
+      <i class="fas fa-stethoscope"></i> Hair & Scalp AI
+    </a>
+    
+    <div class="nav-main">
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/disease_info">Diseases</a></li>
+        <li><a href="/pricing">Pricing</a></li>
+        <li><a href="/appointment">Appointment</a></li>
+      </ul>
+    </div>
+
+    <div class="nav-actions">
+      
+      <div class="user-dropdown" id="userDropdown">
+        <button class="dropdown-trigger" id="dropdownTrigger">
+          <span class="user-name"></span>
+          <i class="fas fa-chevron-down"></i>
+        </button>
+        <div class="dropdown-menu" id="dropdownMenu">
+          <a href="/profile"><i class="fas fa-user-circle"></i> Profile</a>
+          <a href="/predict"><i class="fas fa-chart-line"></i> Dashboard</a>
+          <div class="dropdown-divider"></div>
+          <a href="/logout" class="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+      </div>
+      
+      <a href="/login" class="login-btn">Login</a>
+      
+      
+      <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle Theme">
+        <i class="fas fa-moon"></i>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<style>
+  :root {
+    --nav-bg: rgba(255, 255, 255, 0.85);
+    --nav-border: #e5e7eb;
+    --nav-text: #374151;
+    --nav-hover: #14b8a6;
+    --dropdown-bg: #ffffff;
+    --dropdown-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  }
+
+  [data-theme="dark"] {
+    --nav-bg: rgba(17, 24, 39, 0.85);
+    --nav-border: #374151;
+    --nav-text: #f3f4f6;
+    --dropdown-bg: #1f2937;
+  }
+
+  .navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: var(--nav-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 1000;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--nav-border);
+    transition: all 0.3s ease;
+  }
+
+  .nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1.5rem;
+  }
+
+  .logo {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #14b8a6;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .nav-links {
+    display: flex;
+    list-style: none;
+    gap: 2rem;
+    align-items: center;
+  }
+
+  .nav-links a {
+    text-decoration: none;
+    color: var(--nav-text);
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+  }
+
+  .nav-links a:hover {
+    color: var(--nav-hover);
+  }
+
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+  }
+
+  /* Dropdown Styles */
+  .user-dropdown {
+    position: relative;
+  }
+
+  .dropdown-trigger {
+    background: rgba(20, 184, 166, 0.1);
+    border: 1px solid rgba(20, 184, 166, 0.2);
+    color: #14b8a6;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+  }
+
+  .dropdown-trigger:hover {
+    background: rgba(20, 184, 166, 0.15);
+  }
+
+  .dropdown-menu {
+    position: absolute;
+    top: calc(100% + 0.75rem);
+    right: 0;
+    background: var(--dropdown-bg);
+    border: 1px solid var(--nav-border);
+    border-radius: 12px;
+    width: 180px;
+    padding: 0.5rem;
+    box-shadow: var(--dropdown-shadow);
+    display: none; /* Changed from hover to JS controlled */
+    flex-direction: column;
+    animation: slideIn 0.2s ease-out;
+  }
+
+  .dropdown-menu.show {
+    display: flex;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .dropdown-menu a {
+    text-decoration: none;
+    color: var(--nav-text);
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: background 0.2s;
+  }
+
+  .dropdown-menu a:hover {
+    background: rgba(20, 184, 166, 0.1);
+    color: var(--nav-hover);
+  }
+
+  .dropdown-divider {
+    height: 1px;
+    background: var(--nav-border);
+    margin: 0.4rem 0.5rem;
+  }
+
+  .logout-link:hover {
+    background: rgba(239, 68, 68, 0.1) !important;
+    color: #ef4444 !important;
+  }
+
+  /* Toast Styles */
+  .toast-container {
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .toast {
+    background: var(--dropdown-bg);
+    border: 1px solid var(--nav-border);
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 300px;
+    color: var(--nav-text);
+    animation: toastSlideIn 0.3s ease-out forwards;
+    transition: all 0.3s;
+  }
+
+  @keyframes toastSlideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+
+  .toast.fade-out {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+
+  .toast-success i { color: #10b981; }
+  .toast-error i { color: #ef4444; }
+  .toast-info i { color: #3b82f6; }
+
+  .login-btn {
+    background: #14b8a6;
+    color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+  }
+
+  .login-btn:hover {
+    background: #0d9488;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(20, 184, 166, 0.3);
+  }
+
+  .theme-toggle {
+    background: var(--dropdown-bg);
+    border: 1px solid var(--nav-border);
+    color: var(--nav-text);
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+
+  .theme-toggle:hover {
+    border-color: var(--nav-hover);
+    color: var(--nav-hover);
+  }
+
+  @media (max-width: 768px) {
+    .nav-main { display: none; }
+    .toast-container { right: 1rem; left: 1rem; top: 1rem; }
+    .toast { min-width: auto; }
+  }
+</style>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+  // Dropdown Logic
+  document.addEventListener('DOMContentLoaded', () => {
+    const trigger = document.getElementById('dropdownTrigger');
+    const menu = document.getElementById('dropdownMenu');
+    
+    if (trigger && menu) {
+      trigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        menu.classList.toggle('show');
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!trigger.contains(e.target) && !menu.contains(e.target)) {
+          menu.classList.remove('show');
+        }
+      });
+    }
+  });
+
+  function showToast(message, type = 'success') {
+    const container = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    
+    const iconMap = {
+      success: 'fas fa-check-circle',
+      error: 'fas fa-exclamation-circle',
+      info: 'fas fa-info-circle'
+    };
+    
+    toast.innerHTML = `
+      <i class="${iconMap[type]}"></i>
+      <span>${message}</span>
+    `;
+    
+    container.appendChild(toast);
+    
+    setTimeout(() => {
+      toast.classList.add('fade-out');
+      setTimeout(() => toast.remove(), 300);
+    }, 4000);
+  }
+
+  function toggleTheme() {
+    const body = document.body;
+    const currentTheme = body.dataset.theme === "dark" ? "light" : "dark";
+    body.dataset.theme = currentTheme;
+    const icon = document.querySelector("#themeToggle i");
+    if (icon) {
+      icon.className = currentTheme === "dark" ? "fas fa-sun" : "fas fa-moon";
+    }
+    localStorage.setItem("theme", currentTheme);
+  }
+  
+  // Set theme on load
+  document.addEventListener('DOMContentLoaded', () => {
+    const savedTheme = localStorage.getItem("theme") || "dark";
+    document.body.dataset.theme = savedTheme;
+    const icon = document.querySelector("#themeToggle i");
+    if (icon) {
+      icon.className = savedTheme === "dark" ? "fas fa-sun" : "fas fa-moon";
+    }
+  });
+</script>
+
 
     <main>
       <div class="container">
