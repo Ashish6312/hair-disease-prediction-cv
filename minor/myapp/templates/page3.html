@@ -8,7 +8,7 @@
     <link
       rel="icon"
       type="image/png"
-      href="{% static 'images/favicon.png' %}"
+      href="{% static 'icons/icon-192x192.png' %}"
     />
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
@@ -897,8 +897,8 @@
         </div>
         <div class="footer-section">
           <h3>Services</h3>
-          <p><a href="/find-specialist.html">Find a Specialist</a></p>
-          <p><a href="/diseasetype.html">Explore Diseases</a></p>
+          <p><a href="{% url 'appointment' %}">Find a Specialist</a></p>
+          <p><a href="{% url 'disease_info' %}">Explore Diseases</a></p>
         </div>
         <div class="footer-section">
           <h3>Contact Info</h3>

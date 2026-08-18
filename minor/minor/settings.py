@@ -70,6 +70,10 @@ SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SAMESITE = 'None'
 CSRF_COOKIE_SECURE = True
 
+# Render terminates TLS and forwards plain HTTP; without this, request.is_secure()
+# always reads False, which silently disables Django's HTTPS-only CSRF Referer check.
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 ROOT_URLCONF = 'minor.urls'
 
 TEMPLATES = [

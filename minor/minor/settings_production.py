@@ -22,11 +22,10 @@ ALLOWED_HOSTS = [
 ]
 
 # CORS SETTINGS for Vercel frontend
-CORS_ALLOWED_ORIGINS = [
-    "https://your-app.vercel.app",  # Replace with your actual Vercel domain
-    "http://localhost:3000",
-    "http://localhost:8000",
-]
+# Inherited from .settings (real domain: https://hair-self.vercel.app) — not
+# overridden here anymore. This file previously shadowed it with a placeholder
+# domain that would have silently broken CORS if this settings module were
+# ever actually selected via DJANGO_SETTINGS_MODULE.
 
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = [
