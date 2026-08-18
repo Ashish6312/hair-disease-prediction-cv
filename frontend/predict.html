@@ -793,7 +793,7 @@
   document.addEventListener('DOMContentLoaded', () => {
     const trigger = document.getElementById('dropdownTrigger');
     const menu = document.getElementById('dropdownMenu');
-    
+
     if (trigger && menu) {
       trigger.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -807,6 +807,59 @@
       });
     }
   });
+
+  // Auth-state Nav Sync — reflect real login state in the navbar (dropdown vs Login button)
+  const AUTH_BACKEND = 'https://hair-scalp-backend.onrender.com';
+  (function syncAuthNav() {
+    const dropdown = document.getElementById('userDropdown');
+    const loginBtn = document.querySelector('.login-btn');
+
+    function applyAuthed(user) {
+      if (dropdown) {
+        dropdown.style.display = '';
+        const nameEl = dropdown.querySelector('.user-name');
+        if (nameEl) nameEl.textContent = user.username || user.email || 'Account';
+      }
+      if (loginBtn) loginBtn.style.display = 'none';
+    }
+    function applyGuest() {
+      if (dropdown) dropdown.style.display = 'none';
+      if (loginBtn) loginBtn.style.display = '';
+      localStorage.removeItem('user');
+    }
+
+    if (dropdown) dropdown.style.display = 'none'; // hide until we know, avoid flash of wrong state
+    const cached = localStorage.getItem('user');
+    if (cached) {
+      try { applyAuthed(JSON.parse(cached)); } catch (e) {}
+    }
+
+    fetch(`${AUTH_BACKEND}/check-auth`, { credentials: 'include' })
+      .then(r => r.json())
+      .then(data => {
+        if (data.authenticated) {
+          const user = { username: data.username, email: data.email, plan: data.plan };
+          localStorage.setItem('user', JSON.stringify(user));
+          applyAuthed(user);
+        } else {
+          applyGuest();
+        }
+      })
+      .catch(() => {});
+
+    // Logout links point at the old Django /logout route, which doesn't exist on
+    // this static export — hit the real backend session-logout endpoint instead.
+    document.querySelectorAll('a[href="/logout"], a.logout-link').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        fetch(`${AUTH_BACKEND}/api/logout`, { method: 'POST', credentials: 'include' })
+          .finally(() => {
+            localStorage.removeItem('user');
+            window.location.href = 'index.html';
+          });
+      });
+    });
+  })();
 
   function showToast(message, type = 'success') {
     const container = document.getElementById('toastContainer');
@@ -950,7 +1003,7 @@
               </div>
 
               <div class="upload-options">
-                <a href="/camera-capture" class="option-btn" id="useCameraBtn">
+                <a href="camera_capture.html" class="option-btn" id="useCameraBtn">
                   <i class="fas fa-camera"></i>
                   <span>Use Camera</span>
                 </a>
@@ -1005,14 +1058,6 @@
 
     <script>
       // --- GLOBAL SCRIPTS ---
-      const themeToggle = document.getElementById("themeToggle");
-      const body = document.body;
-      themeToggle.addEventListener("click", () => {
-        const currentTheme = body.dataset.theme === "dark" ? "light" : "dark";
-        body.dataset.theme = currentTheme;
-        themeToggle.querySelector("i").className =
-          currentTheme === "dark" ? "fas fa-sun" : "fas fa-moon";
-      });
 
       // --- PAGE-SPECIFIC SCRIPTS ---
       const today = new Date().toISOString().split('T')[0];
@@ -1130,13 +1175,12 @@
           predictBtn.disabled = true;
 
           try {
-            const csrfToken = document.querySelector(
-              "[name=csrfmiddlewaretoken]"
-            ).value;
-            const response = await fetch("/predict-api", {
+            // predict-api is CSRF-exempt on the backend, and this static export
+            // has no {% csrf_token %} template tag to read from any more.
+            const response = await fetch(`${AUTH_BACKEND}/predict-api`, {
               method: "POST",
               body: formData,
-              headers: { "X-CSRFToken": csrfToken },
+              credentials: "include",
             });
             const result = await response.json();
             if (result.error) {
@@ -1148,7 +1192,7 @@
               localStorage.setItem("symptomStartDate", symptomStartDate);
               localStorage.setItem("prediction", JSON.stringify(result));
               localStorage.setItem("uploadedImage", previewImage.src);
-              window.location.href = "/result";
+              window.location.href = "result.html";
             }
           } catch (error) {
             showToast(`An error occurred: ${error.message}`, "info");

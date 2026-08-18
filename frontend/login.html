@@ -555,6 +555,68 @@
     .toast-container { right: 1rem; left: 1rem; top: 1rem; }
     .toast { min-width: auto; }
   }
+
+  /* ── Form Card Styles ── */
+  main {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6rem 1rem 2rem;
+  }
+  .form-card {
+    background: var(--dropdown-bg);
+    border: 1px solid var(--nav-border);
+    border-radius: 16px;
+    padding: 2.5rem;
+    width: 100%;
+    max-width: 440px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+  }
+  .form-card h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: var(--nav-text);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .form-card h1 i { color: #14b8a6; }
+  .form-group { margin-bottom: 1.2rem; }
+  .form-group label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--nav-text);
+    opacity: 0.7;
+    margin-bottom: 0.4rem;
+  }
+  .form-control {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--nav-border);
+    border-radius: 10px;
+    background: rgba(0,0,0,0.2);
+    color: var(--nav-text);
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.95rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+  }
+  .form-control:focus {
+    border-color: #14b8a6;
+    box-shadow: 0 0 0 3px rgba(20,184,166,0.15);
+  }
+  .btn { width: 100%; padding: 0.85rem; border: none; border-radius: 10px; cursor: pointer; font-family: 'Poppins', sans-serif; font-size: 1rem; font-weight: 600; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+  .btn-primary { background: linear-gradient(135deg, #14b8a6, #10b981); color: white; }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(20,184,166,0.4); }
+  .btn-primary:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+  .form-footer-link { text-align: center; margin-top: 1.2rem; }
+  .form-footer-link a { color: #14b8a6; text-decoration: none; font-size: 0.9rem; font-weight: 500; }
+  .form-footer-link a:hover { text-decoration: underline; }
 </style>
 
 <div class="toast-container" id="toastContainer"></div>
@@ -629,22 +691,23 @@
       <div class="form-card">
         <h1><i class="fas fa-user-circle"></i> User Login</h1>
 
-         
-        <div class="alert alert-"></div>
-         
+        <div class="alert alert-error" id="loginError" style="display:none;background:rgba(239,68,68,0.1);color:#ef4444;border:1px solid rgba(239,68,68,0.3);padding:0.75rem 1rem;border-radius:8px;margin-bottom:1rem;font-size:0.9rem;"></div>
 
-        <form method="post" action="">
-           
-          <button
-            type="submit"
-            class="btn btn-primary"
-            style="margin-top: 1.5rem"
-          >
+        <form id="loginForm">
+          <div class="form-group">
+            <label for="loginEmail">Gmail / Email</label>
+            <input type="email" id="loginEmail" name="email" class="form-control" placeholder="Enter your email" required autocomplete="email" />
+          </div>
+          <div class="form-group">
+            <label for="loginPassword">Password</label>
+            <input type="password" id="loginPassword" name="password" class="form-control" placeholder="Enter your password" required autocomplete="current-password" />
+          </div>
+          <button type="submit" class="btn btn-primary" id="loginBtn" style="margin-top: 1.5rem">
             Login <i class="fas fa-arrow-right"></i>
           </button>
         </form>
         <div class="form-footer-link">
-          <a href="">Don't have an account? Register</a>
+          <a href="register.html">Don't have an account? Register</a>
         </div>
       </div>
     </main>
@@ -652,17 +715,72 @@
     <footer class="footer" id="contact">
       <div class="footer-content"></div>
       <div class="footer-bottom">
-        <p>&copy; 2025 Hair & Scalp Disease Prediction. All Rights Reserved.</p>
+        <p>&copy; 2025 Hair &amp; Scalp Disease Prediction. All Rights Reserved.</p>
       </div>
     </footer>
+
     <script>
+      const BACKEND = 'https://hair-scalp-backend.onrender.com';
+
       const themeToggle = document.getElementById("themeToggle");
       const body = document.body;
-      themeToggle.addEventListener("click", () => {
-        const currentTheme = body.dataset.theme === "dark" ? "light" : "dark";
-        body.dataset.theme = currentTheme;
-        themeToggle.querySelector("i").className =
-          currentTheme === "dark" ? "fas fa-sun" : "fas fa-moon";
+      const savedTheme = localStorage.getItem("theme") || "dark";
+      body.dataset.theme = savedTheme;
+      if (themeToggle) {
+        themeToggle.querySelector("i").className = savedTheme === "dark" ? "fas fa-sun" : "fas fa-moon";
+        themeToggle.addEventListener("click", () => {
+          const t = body.dataset.theme === "dark" ? "light" : "dark";
+          body.dataset.theme = t;
+          themeToggle.querySelector("i").className = t === "dark" ? "fas fa-sun" : "fas fa-moon";
+          localStorage.setItem("theme", t);
+        });
+      }
+
+      // Check if already logged in
+      fetch(`${BACKEND}/check-auth`, { credentials: 'include' })
+        .then(r => r.json())
+        .then(data => {
+          if (data.authenticated) {
+            localStorage.setItem('user', JSON.stringify({ username: data.username, email: data.email, plan: data.plan }));
+            window.location.href = 'predict.html';
+          }
+        }).catch(() => {});
+
+      document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('loginBtn');
+        const errDiv = document.getElementById('loginError');
+        errDiv.style.display = 'none';
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
+
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value;
+
+        try {
+          const res = await fetch(`${BACKEND}/api/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ email, password })
+          });
+          const data = await res.json();
+          if (data.success) {
+            localStorage.setItem('user', JSON.stringify({ username: data.username, email: data.email, plan: data.plan }));
+            showToast('Login successful! Redirecting...', 'success');
+            setTimeout(() => { window.location.href = 'index.html'; }, 1000);
+          } else {
+            errDiv.textContent = data.error || 'Login failed. Please try again.';
+            errDiv.style.display = 'block';
+            btn.disabled = false;
+            btn.innerHTML = 'Login <i class="fas fa-arrow-right"></i>';
+          }
+        } catch (err) {
+          errDiv.textContent = 'Connection error. Please try again.';
+          errDiv.style.display = 'block';
+          btn.disabled = false;
+          btn.innerHTML = 'Login <i class="fas fa-arrow-right"></i>';
+        }
       });
     </script>
    <script> window.chtlConfig = { chatbotId: "8383945963" } </script>

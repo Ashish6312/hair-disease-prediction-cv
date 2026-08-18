@@ -449,7 +449,7 @@
   document.addEventListener('DOMContentLoaded', () => {
     const trigger = document.getElementById('dropdownTrigger');
     const menu = document.getElementById('dropdownMenu');
-    
+
     if (trigger && menu) {
       trigger.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -463,6 +463,59 @@
       });
     }
   });
+
+  // Auth-state Nav Sync — reflect real login state in the navbar (dropdown vs Login button)
+  const AUTH_BACKEND = 'https://hair-scalp-backend.onrender.com';
+  (function syncAuthNav() {
+    const dropdown = document.getElementById('userDropdown');
+    const loginBtn = document.querySelector('.login-btn');
+
+    function applyAuthed(user) {
+      if (dropdown) {
+        dropdown.style.display = '';
+        const nameEl = dropdown.querySelector('.user-name');
+        if (nameEl) nameEl.textContent = user.username || user.email || 'Account';
+      }
+      if (loginBtn) loginBtn.style.display = 'none';
+    }
+    function applyGuest() {
+      if (dropdown) dropdown.style.display = 'none';
+      if (loginBtn) loginBtn.style.display = '';
+      localStorage.removeItem('user');
+    }
+
+    if (dropdown) dropdown.style.display = 'none'; // hide until we know, avoid flash of wrong state
+    const cached = localStorage.getItem('user');
+    if (cached) {
+      try { applyAuthed(JSON.parse(cached)); } catch (e) {}
+    }
+
+    fetch(`${AUTH_BACKEND}/check-auth`, { credentials: 'include' })
+      .then(r => r.json())
+      .then(data => {
+        if (data.authenticated) {
+          const user = { username: data.username, email: data.email, plan: data.plan };
+          localStorage.setItem('user', JSON.stringify(user));
+          applyAuthed(user);
+        } else {
+          applyGuest();
+        }
+      })
+      .catch(() => {});
+
+    // Logout links point at the old Django /logout route, which doesn't exist on
+    // this static export — hit the real backend session-logout endpoint instead.
+    document.querySelectorAll('a[href="/logout"], a.logout-link').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        fetch(`${AUTH_BACKEND}/api/logout`, { method: 'POST', credentials: 'include' })
+          .finally(() => {
+            localStorage.removeItem('user');
+            window.location.href = 'index.html';
+          });
+      });
+    });
+  })();
 
   function showToast(message, type = 'success') {
     const container = document.getElementById('toastContainer');
@@ -525,7 +578,7 @@
                     <li><i class="fas fa-check"></i> Basic Hair Health Guide</li>
                     <li><i class="fas fa-check"></i> Community Support</li>
                 </ul>
-                <button class="purchase-btn" onclick="redirectToLogin()">Get Started</button>
+                <button class="purchase-btn" onclick="purchaseOrLogin('Free')">Get Started</button>
             </div>
 
             <!-- Starter Plan -->
@@ -538,7 +591,7 @@
                     <li><i class="fas fa-check"></i> Personalized Treatment Plans</li>
                     <li><i class="fas fa-check"></i> Specialist Chat Support</li>
                 </ul>
-                <button class="purchase-btn" onclick="redirectToLogin()">Buy Now</button>
+                <button class="purchase-btn" onclick="purchaseOrLogin('Starter')">Buy Now</button>
             </div>
 
             <!-- Pro Plan -->
@@ -550,7 +603,7 @@
                     <li><i class="fas fa-check"></i> Advanced Lab Reports Analysis</li>
                     <li><i class="fas fa-check"></i> Progress Tracking Dashboard</li>
                 </ul>
-                <button class="purchase-btn" onclick="redirectToLogin()">Upgrade Pro</button>
+                <button class="purchase-btn" onclick="purchaseOrLogin('Pro')">Upgrade Pro</button>
             </div>
         </div>
     </section>
@@ -573,7 +626,17 @@
 
         function redirectToLogin() {
             showToast('Please login first to purchase a plan!', "info");
-            window.location.href = '/login';
+            window.location.href = 'login.html';
+        }
+
+        // Only open the purchase flow for a real, logged-in session; guests go to login.
+        function purchaseOrLogin(plan) {
+            const cached = localStorage.getItem('user');
+            if (!cached) {
+                redirectToLogin();
+                return;
+            }
+            openPurchaseModal(plan);
         }
 
         function openPurchaseModal(plan) {
@@ -591,22 +654,28 @@
             const price = priceMap[currentPlan];
             
             try {
-                const response = await fetch('/activate-plan', {
+                const response = await fetch(`${AUTH_BACKEND}/activate-plan`, {
                     method: 'POST',
+                    credentials: 'include',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': ''
+                        'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
                         plan_name: currentPlan,
                         price: price
                     })
                 });
-                
+
+                if (response.status === 401 || response.redirected) {
+                    showToast('Your session expired. Please login again.', 'error');
+                    setTimeout(() => window.location.href = 'login.html', 1500);
+                    return;
+                }
+
                 const result = await response.json();
                 if (result.success) {
                     showToast('Plan ' + currentPlan + ' activated successfully!', 'success');
-                    setTimeout(() => window.location.href = '/profile', 1500);
+                    setTimeout(() => window.location.href = 'profile.html', 1500);
                 } else {
                     showToast('Error: ' + result.error, 'error');
                 }

@@ -55,9 +55,20 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# CORS Settings for development
-CORS_ALLOW_ALL_ORIGINS = True  # For development only
+# CORS Settings — allow Vercel frontend to call Render backend with credentials
+CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOWED_ORIGINS = [
+    "https://hair-self.vercel.app",
+    "http://localhost:3000",
+    "http://127.0.0.1:5500",
+]
 CORS_ALLOW_CREDENTIALS = True
+
+# Session cookie must be SameSite=None;Secure to work across origins (Vercel → Render)
+SESSION_COOKIE_SAMESITE = 'None'
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SAMESITE = 'None'
+CSRF_COOKIE_SECURE = True
 
 ROOT_URLCONF = 'minor.urls'
 

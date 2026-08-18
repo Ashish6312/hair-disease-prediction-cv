@@ -1099,7 +1099,7 @@
   document.addEventListener('DOMContentLoaded', () => {
     const trigger = document.getElementById('dropdownTrigger');
     const menu = document.getElementById('dropdownMenu');
-    
+
     if (trigger && menu) {
       trigger.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -1113,6 +1113,59 @@
       });
     }
   });
+
+  // Auth-state Nav Sync — reflect real login state in the navbar (dropdown vs Login button)
+  const AUTH_BACKEND = 'https://hair-scalp-backend.onrender.com';
+  (function syncAuthNav() {
+    const dropdown = document.getElementById('userDropdown');
+    const loginBtn = document.querySelector('.login-btn');
+
+    function applyAuthed(user) {
+      if (dropdown) {
+        dropdown.style.display = '';
+        const nameEl = dropdown.querySelector('.user-name');
+        if (nameEl) nameEl.textContent = user.username || user.email || 'Account';
+      }
+      if (loginBtn) loginBtn.style.display = 'none';
+    }
+    function applyGuest() {
+      if (dropdown) dropdown.style.display = 'none';
+      if (loginBtn) loginBtn.style.display = '';
+      localStorage.removeItem('user');
+    }
+
+    if (dropdown) dropdown.style.display = 'none'; // hide until we know, avoid flash of wrong state
+    const cached = localStorage.getItem('user');
+    if (cached) {
+      try { applyAuthed(JSON.parse(cached)); } catch (e) {}
+    }
+
+    fetch(`${AUTH_BACKEND}/check-auth`, { credentials: 'include' })
+      .then(r => r.json())
+      .then(data => {
+        if (data.authenticated) {
+          const user = { username: data.username, email: data.email, plan: data.plan };
+          localStorage.setItem('user', JSON.stringify(user));
+          applyAuthed(user);
+        } else {
+          applyGuest();
+        }
+      })
+      .catch(() => {});
+
+    // Logout links point at the old Django /logout route, which doesn't exist on
+    // this static export — hit the real backend session-logout endpoint instead.
+    document.querySelectorAll('a[href="/logout"], a.logout-link').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        fetch(`${AUTH_BACKEND}/api/logout`, { method: 'POST', credentials: 'include' })
+          .finally(() => {
+            localStorage.removeItem('user');
+            window.location.href = 'index.html';
+          });
+      });
+    });
+  })();
 
   function showToast(message, type = 'success') {
     const container = document.getElementById('toastContainer');
@@ -1192,7 +1245,7 @@
               information, symptoms, and treatment options.
             </p>
             <a
-              href="disease_info"
+              href="disease_info.html"
               class="feature-button"
               style="text-decoration: none"
             >
@@ -1209,7 +1262,7 @@
               Schedule consultations with certified dermatologists and hair
               specialists for personalized treatment plans.
             </p>
-            <a href="appointment" class="feature-button">
+            <a href="appointment.html" class="feature-button">
               <i class="fas fa-arrow-right"></i> Book Now
             </a>
           </div>
@@ -1437,15 +1490,6 @@
         });
       });
 
-      // Theme Toggle
-      const themeToggle = document.getElementById("themeToggle");
-      const body = document.body;
-      themeToggle.addEventListener("click", () => {
-        const currentTheme = body.dataset.theme === "dark" ? "light" : "dark";
-        body.dataset.theme = currentTheme;
-        const icon = themeToggle.querySelector("i");
-        icon.className = currentTheme === "dark" ? "fas fa-sun" : "fas fa-moon";
-      });
 
       // Carousel Functionality
       let currentSlideIndex = 0;
@@ -1468,39 +1512,9 @@
       }
       setInterval(() => changeSlide(1), 5000);
 
-      // Button Click Handlers
-      function exploreDisease() {
-        showToast("🔍 Redirecting to the disease encyclopedia...");
-      }
-      function bookAppointment() {
-        showToast("📅 Opening the appointment scheduling page...");
-      }
-      function predictDisease() {
-        showToast("🧠 Loading the AI prediction tool...");
-      }
-
-      // Try AI function - checks authentication status
+      // Try AI — prediction is open to guests, so just go straight to the tool
       function tryAI() {
-        // Check if user is authenticated using our API endpoint
-        fetch("/check-auth", {
-          method: "GET",
-          credentials: "same-origin", // Include cookies for session
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            if (data.authenticated) {
-              // User is authenticated, redirect to predict page
-              window.location.href = "/predict";
-            } else {
-              // User is not authenticated, redirect to login
-              window.location.href = "/login";
-            }
-          })
-          .catch((error) => {
-            // On error, redirect to login page
-            console.error("Error checking authentication:", error);
-            window.location.href = "/login";
-          });
+        window.location.href = "predict.html";
       }
 
       // Stagger animations with JS
@@ -1512,30 +1526,6 @@
       }
       staggerAnimation(".feature-card");
       staggerAnimation(".team-card");
-
-      // Check authentication status on page load
-      function checkAuthStatus() {
-        fetch("/check-auth", {
-          method: "GET",
-          credentials: "same-origin",
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            if (data.authenticated) {
-              // User is logged in, show user info and logout option
-              const authStatus = document.getElementById("authStatus");
-              const userInfo = document.getElementById("userInfo");
-              userInfo.textContent = `Welcome, ${data.username}!`;
-              authStatus.style.display = "block";
-            }
-          })
-          .catch((error) => {
-            console.log("User not authenticated or error checking status");
-          });
-      }
-
-      // Check auth status when page loads
-      checkAuthStatus();
 
       // Welcome popup - only show once on first visit
       function showWelcomePopup() {
