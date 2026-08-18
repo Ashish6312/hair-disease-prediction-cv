@@ -25,6 +25,7 @@ def chrome_devtools_handler(request):
 
 urlpatterns = [
     path('', views.home, name='home'),
+    path('dashboard', views.dashboard, name='dashboard'),
     path('appointment', views.appointment, name='appointment'),
     path('disease_info', views.disease_info, name='disease_info'),
     path('page1', views.page1, name='page1'),
