@@ -156,6 +156,18 @@ public class MainActivity extends AppCompatActivity {
 
         webView.setWebViewClient(new WebViewClient() {
             @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                String url = request.getUrl().toString();
+                if (url.contains("onrender.com") || url.startsWith("file://") || url.startsWith("/")) {
+                    return false; // Load inside WebView
+                }
+                // External links (e.g. documentation, external auth) open in browser
+                Intent intent = new Intent(Intent.ACTION_VIEW, request.getUrl());
+                startActivity(intent);
+                return true;
+            }
+
+            @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 progressBar.setVisibility(View.VISIBLE);
             }
