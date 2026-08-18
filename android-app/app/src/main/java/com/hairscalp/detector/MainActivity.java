@@ -254,6 +254,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupSwipeRefresh() {
         swipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(this, R.color.teal_500));
+
+        // Only enable swipe-to-refresh when WebView is scrolled all the way to the top
+        webView.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+            swipeRefreshLayout.setEnabled(scrollY == 0);
+        });
+
         swipeRefreshLayout.setOnRefreshListener(() -> {
             if (isNetworkAvailable()) {
                 webView.reload();
