@@ -6,7 +6,6 @@ echo "==> Starting build process..."
 
 # Install Python dependencies
 echo "==> Installing Python dependencies..."
-pip install --upgrade pip
 pip install -r minor/requirements_production.txt
 
 # Navigate to Django project directory
