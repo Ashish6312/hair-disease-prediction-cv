@@ -14,6 +14,7 @@ import time
 from .ml_service import ml_service
 from .models import Subscription, Invoice
 import uuid
+from django.utils import timezone
 
 # Create your views here.
 def home(request):
@@ -181,8 +182,11 @@ def activate_plan(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            plan_name = data.get('plan')
+            plan_name = data.get('plan_name')
             price = data.get('price')
+            
+            if not plan_name:
+                return JsonResponse({'success': False, 'error': 'Plan name is missing'})
             
             subscription, created = Subscription.objects.update_or_create(
                 user=request.user,
@@ -190,15 +194,15 @@ def activate_plan(request):
                     'plan_name': plan_name,
                     'price': price,
                     'is_active': True,
-                    'activated_at': time.strftime('%Y-%m-%d %H:%M:%S')
+                    'activated_at': timezone.now()
                 }
             )
             
             Invoice.objects.create(
                 user=request.user,
+                subscription=subscription,
                 invoice_number=f"INV-{uuid.uuid4().hex[:8].upper()}",
-                amount=price,
-                plan_name=plan_name
+                amount=price
             )
             
             return JsonResponse({'success': True})
