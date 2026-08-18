@@ -861,6 +861,23 @@
     });
   })();
 
+  // AI Prediction requires a real login. Gate the whole page on it — hide
+  // the form until confirmed, and any failure (guest, network hiccup,
+  // backend cold-start) sends to login rather than leaving the form usable.
+  document.querySelector('main').style.visibility = 'hidden';
+  fetch(`${AUTH_BACKEND}/check-auth`, { credentials: 'include' })
+    .then(r => r.json())
+    .then(data => {
+      if (data.authenticated) {
+        document.querySelector('main').style.visibility = 'visible';
+      } else {
+        window.location.href = 'login.html';
+      }
+    })
+    .catch(() => {
+      window.location.href = 'login.html';
+    });
+
   function showToast(message, type = 'success') {
     const container = document.getElementById('toastContainer');
     const toast = document.createElement('div');
@@ -1275,6 +1292,22 @@
         const tenYearsAgo = new Date(today);
         tenYearsAgo.setFullYear(tenYearsAgo.getFullYear() - 10);
         input.min = tenYearsAgo.toISOString().split('T')[0];
+
+        // min/max only affect the browser's :invalid styling and constraint
+        // validation API — they don't stop a value from being entered or
+        // displayed, and this is a plain type="button" flow with no native
+        // form submit to trigger that validation anyway. A fat-fingered
+        // year (e.g. typing "88" into the year segment gives "0088") sails
+        // straight through and just sits there looking wrong until the
+        // user clicks Predict. Clear it the moment it's out of range
+        // instead of waiting for submit.
+        input.addEventListener('change', () => {
+          if (!input.value) return;
+          if (input.value < input.min || input.value > input.max) {
+            showToast('That symptom start date looks off — please re-check the year.', 'info');
+            input.value = '';
+          }
+        });
       })();
 
       // Reset timer on user activity
