@@ -119,6 +119,8 @@ def camera_capture(request):
 @csrf_exempt
 def predict_api(request):
     if request.method == 'POST':
+        if not request.user.is_authenticated:
+            return JsonResponse({'error': 'Login required for AI prediction'}, status=401)
         try:
             request.session['last_activity'] = time.time()
 

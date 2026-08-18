@@ -1513,8 +1513,12 @@
       setInterval(() => changeSlide(1), 5000);
 
       // Try AI — prediction is open to guests, so just go straight to the tool
+      // AI Prediction requires login. predict.html enforces this itself
+      // (redirects guests), but check the cached auth state here too so a
+      // logged-out click goes straight to login instead of bouncing off
+      // predict.html first.
       function tryAI() {
-        window.location.href = "predict.html";
+        window.location.href = localStorage.getItem('user') ? "predict.html" : "login.html";
       }
 
       // Stagger animations with JS
