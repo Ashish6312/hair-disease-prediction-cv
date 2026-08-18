@@ -9,12 +9,15 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 import json
+import logging
 import os
 import time
 from .ml_service import ml_service
 from .models import Subscription, Invoice
 import uuid
 from django.utils import timezone
+
+logger = logging.getLogger(__name__)
 
 # Create your views here.
 def home(request):
@@ -97,8 +100,12 @@ def logout_view(request):
 
 def check_plan(user):
     """Helper to check if user has access to premium features"""
-    subscription = getattr(user, 'subscription', None)
-    return subscription and subscription.is_active and subscription.plan_name in ['Starter', 'Pro']
+    try:
+        subscription = getattr(user, 'subscription', None)
+        return subscription and subscription.is_active and subscription.plan_name in ['Starter', 'Pro']
+    except Exception:
+        logger.exception("check_plan: subscription lookup failed")
+        return False
 
 @login_required(login_url='login')
 def predict(request):
@@ -138,7 +145,8 @@ def predict_api(request):
                 return JsonResponse(result, status=500)
             return JsonResponse(result)
         except Exception as e:
-            return JsonResponse({'error': f'Server error: {str(e)}'}, status=500)
+            logger.exception("predict_api failed")
+            return JsonResponse({'error': 'Prediction failed. Please try again.'}, status=500)
     return JsonResponse({'error': 'Method not allowed'}, status=405)
 
 @login_required(login_url='login')
@@ -147,10 +155,19 @@ def result(request):
     return render(request, 'result.html')
 
 def check_auth_status(request):
-    """Simple endpoint to check if user is authenticated and their plan"""
+    """Simple endpoint to check if user is authenticated and their plan.
+
+    Called on every page load site-wide to sync the navbar (dropdown vs
+    Login button) — a DB error here must never turn into a raw 500, or
+    the frontend's fetch throws, its .catch() no-ops, and the navbar is
+    left showing whatever stale mixed state it started in."""
     if request.user.is_authenticated:
-        subscription = getattr(request.user, 'subscription', None)
-        plan = subscription.plan_name if subscription else 'Free'
+        try:
+            subscription = getattr(request.user, 'subscription', None)
+            plan = subscription.plan_name if subscription else 'Free'
+        except Exception:
+            logger.exception("check_auth_status: plan lookup failed")
+            plan = 'Free'
         return JsonResponse({
             'authenticated': True,
             'username': request.user.username,
@@ -207,7 +224,8 @@ def activate_plan(request):
             
             return JsonResponse({'success': True})
         except Exception as e:
-            return JsonResponse({'success': False, 'error': str(e)})
+            logger.exception("activate_plan failed")
+            return JsonResponse({'success': False, 'error': 'Could not activate plan. Please try again.'}, status=500)
     return JsonResponse({'success': False, 'error': 'Invalid request'})
 
 # ─────────────────────────────────────────
@@ -229,8 +247,14 @@ def api_login(request):
         if user is not None:
             login(request, user, backend='myapp.backends.EmailBackend')
             request.session['last_activity'] = time.time()
-            subscription = getattr(user, 'subscription', None)
-            plan = subscription.plan_name if subscription else 'Free'
+            # The session is already established above — a plan-lookup
+            # hiccup here shouldn't fail a login that already succeeded.
+            try:
+                subscription = getattr(user, 'subscription', None)
+                plan = subscription.plan_name if subscription else 'Free'
+            except Exception:
+                logger.exception("api_login: plan lookup failed")
+                plan = 'Free'
             return JsonResponse({
                 'success': True,
                 'username': user.username,
@@ -239,7 +263,8 @@ def api_login(request):
             })
         return JsonResponse({'success': False, 'error': 'Invalid email or password'})
     except Exception as e:
-        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+        logger.exception("api_login failed")
+        return JsonResponse({'success': False, 'error': 'Something went wrong. Please try again.'}, status=500)
 
 
 @csrf_exempt
@@ -270,7 +295,8 @@ def api_register(request):
         request.session['last_activity'] = time.time()
         return JsonResponse({'success': True, 'username': user.username, 'email': user.email})
     except Exception as e:
-        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+        logger.exception("api_register failed")
+        return JsonResponse({'success': False, 'error': 'Something went wrong. Please try again.'}, status=500)
 
 
 @csrf_exempt
@@ -286,23 +312,34 @@ def api_profile(request):
     if not request.user.is_authenticated:
         return JsonResponse({'success': False, 'error': 'Not authenticated'}, status=401)
     user = request.user
-    subscription = getattr(user, 'subscription', None)
-    invoices = [
-        {
-            'invoice_number': inv.invoice_number,
-            'amount': str(inv.amount),
-            'date': inv.date.strftime('%Y-%m-%d'),
-        }
-        for inv in user.invoices.order_by('-date')[:20]
-    ]
-    return JsonResponse({
-        'success': True,
-        'username': user.username,
-        'email': user.email,
-        'plan': subscription.plan_name if subscription else 'Free',
-        'price': str(subscription.price) if subscription else '0.00',
-        'invoices': invoices,
-    })
+    try:
+        subscription = getattr(user, 'subscription', None)
+        invoices = [
+            {
+                'invoice_number': inv.invoice_number,
+                'amount': str(inv.amount),
+                'date': inv.date.strftime('%Y-%m-%d'),
+            }
+            for inv in user.invoices.order_by('-date')[:20]
+        ]
+        return JsonResponse({
+            'success': True,
+            'username': user.username,
+            'email': user.email,
+            'plan': subscription.plan_name if subscription else 'Free',
+            'price': str(subscription.price) if subscription else '0.00',
+            'invoices': invoices,
+        })
+    except Exception:
+        logger.exception("api_profile failed")
+        return JsonResponse({
+            'success': True,
+            'username': user.username,
+            'email': user.email,
+            'plan': 'Free',
+            'price': '0.00',
+            'invoices': [],
+        })
 
 
 @csrf_exempt
@@ -324,4 +361,5 @@ def api_profile_update(request):
         user.save()
         return JsonResponse({'success': True, 'username': user.username, 'email': user.email})
     except Exception as e:
-        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+        logger.exception("api_profile_update failed")
+        return JsonResponse({'success': False, 'error': 'Something went wrong. Please try again.'}, status=500)
