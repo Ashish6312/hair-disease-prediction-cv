@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing - Hair & Scalp AI</title>
+    
+    <link rel="icon" type="image/png" href="images/favicon.png" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #14b8a6;
+            --secondary-color-bg: #f3f4f6;
+            --accent-color: #10b981;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --white-color: #ffffff;
+            --border-color: #e5e7eb;
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --border-radius: 12px;
+            --transition-speed: 0.3s ease;
+        }
+
+        [data-theme="dark"] {
+            --secondary-color-bg: #111827;
+            --text-dark: #f3f4f6;
+            --text-light: #9ca3af;
+            --white-color: #1f2937;
+            --border-color: #374151;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--secondary-color-bg);
+            color: var(--text-dark);
+            min-height: 100vh;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        [data-theme="dark"] .navbar { background: rgba(31, 41, 55, 0.8); }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 1rem;
+        }
+
+        .logo { font-size: 1.5rem; font-weight: 700; color: var(--primary-color); text-decoration: none; }
+
+        .pricing-section {
+            padding: 8rem 1rem 4rem;
+            text-align: center;
+        }
+
+        .section-title { font-size: 2.5rem; margin-bottom: 1rem; }
+        .section-subtitle { color: var(--text-light); margin-bottom: 4rem; }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .pricing-card {
+            background: var(--white-color);
+            padding: 3rem 2rem;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-color);
+            transition: all var(--transition-speed);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pricing-card:hover { transform: translateY(-10px); box-shadow: var(--shadow-lg); }
+
+        .pricing-card.popular { border: 2px solid var(--primary-color); }
+        .popular-badge {
+            position: absolute;
+            top: 1rem;
+            right: -2rem;
+            background: var(--primary-color);
+            color: white;
+            padding: 0.5rem 3rem;
+            transform: rotate(45deg);
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .plan-name { font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem; }
+        .plan-price { font-size: 3rem; font-weight: 800; margin-bottom: 2rem; color: var(--primary-color); }
+        .plan-price span { font-size: 1rem; color: var(--text-light); }
+
+        .features-list { list-style: none; text-align: left; margin-bottom: 2.5rem; }
+        .features-list li { margin-bottom: 1rem; color: var(--text-light); display: flex; align-items: center; gap: 0.75rem; }
+        .features-list li i { color: var(--accent-color); }
+
+        .purchase-btn {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 50px;
+            border: none;
+            background: var(--accent-color);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-speed);
+        }
+        .purchase-btn:hover { background: #059669; transform: scale(1.02); }
+
+        /* Popup Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-card {
+            background: var(--white-color);
+            padding: 2.5rem;
+            border-radius: var(--border-radius);
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+            box-shadow: var(--shadow-lg);
+            animation: modalIn 0.3s ease-out;
+        }
+
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal-icon { font-size: 4rem; color: var(--primary-color); margin-bottom: 1.5rem; }
+        .modal-title { font-size: 1.5rem; margin-bottom: 1rem; }
+        .modal-text { color: var(--text-light); margin-bottom: 2rem; }
+
+        .modal-actions { display: flex; gap: 1rem; }
+        .modal-btn { flex: 1; padding: 0.8rem; border-radius: 50px; border: none; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .confirm-btn { background: var(--primary-color); color: white; }
+        .cancel-btn { background: var(--border-color); color: var(--text-dark); }
+        .confirm-btn:hover { opacity: 0.9; }
+
+        .nav-links { display: flex; list-style: none; gap: 2rem; align-items: center; }
+        .nav-links a { text-decoration: none; color: var(--text-dark); font-weight: 500; }
+        .btn-login { background: var(--primary-color); color: white !important; padding: 0.5rem 1.5rem; border-radius: 25px; }
+
+    </style>
+</head>
+<body data-theme="dark">
+
+    {% include 'navbar.html' %}
+
+    <section class="pricing-section">
+        <h1 class="section-title">Ready to Transform Your Hair Health?</h1>
+        <p class="section-subtitle">Choose the plan that fits your journey</p>
+
+        <div class="pricing-grid">
+            <!-- Free Plan -->
+            <div class="pricing-card">
+                <div class="plan-name">Free</div>
+                <div class="plan-price">₹0<span>/month</span></div>
+                <ul class="features-list">
+                    <li><i class="fas fa-check"></i> 3 AI Predictions / month</li>
+                    <li><i class="fas fa-check"></i> Basic Hair Health Guide</li>
+                    <li><i class="fas fa-check"></i> Community Support</li>
+                </ul>
+                <button class="purchase-btn" onclick="redirectToLogin()">Get Started</button>
+            </div>
+
+            <!-- Starter Plan -->
+            <div class="pricing-card popular">
+                <div class="popular-badge">MOST POPULAR</div>
+                <div class="plan-name">Starter</div>
+                <div class="plan-price">₹1,499<span>/month</span></div>
+                <ul class="features-list">
+                    <li><i class="fas fa-check"></i> Unlimited AI Predictions</li>
+                    <li><i class="fas fa-check"></i> Personalized Treatment Plans</li>
+                    <li><i class="fas fa-check"></i> Specialist Chat Support</li>
+                </ul>
+                <button class="purchase-btn" onclick="redirectToLogin()">Buy Now</button>
+            </div>
+
+            <!-- Pro Plan -->
+            <div class="pricing-card">
+                <div class="plan-name">Pro</div>
+                <div class="plan-price">₹3,999<span>/month</span></div>
+                <ul class="features-list">
+                    <li><i class="fas fa-check"></i> Priority Specialist Consultation</li>
+                    <li><i class="fas fa-check"></i> Advanced Lab Reports Analysis</li>
+                    <li><i class="fas fa-check"></i> Progress Tracking Dashboard</li>
+                </ul>
+                <button class="purchase-btn" onclick="redirectToLogin()">Upgrade Pro</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Purchase Modal -->
+    <div class="modal-overlay" id="purchaseModal">
+        <div class="modal-card">
+            <div class="modal-icon"><i class="fas fa-credit-card"></i></div>
+            <h2 class="modal-title">Confirm Your Plan</h2>
+            <p class="modal-text">You are about to activate the <strong id="selectedPlan"></strong> plan. Would you like to proceed with the activation?</p>
+            <div class="modal-actions">
+                <button class="modal-btn cancel-btn" onclick="closeModal()">Cancel</button>
+                <button class="modal-btn confirm-btn" onclick="confirmPurchase()">Confirm & Activate</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentPlan = '';
+
+        function redirectToLogin() {
+            showToast('Please login first to purchase a plan!', "info");
+            window.location.href = '/login';
+        }
+
+        function openPurchaseModal(plan) {
+            currentPlan = plan;
+            document.getElementById('selectedPlan').innerText = plan;
+            document.getElementById('purchaseModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('purchaseModal').style.display = 'none';
+        }
+
+        async function confirmPurchase() {
+            const priceMap = { 'Free': 0, 'Starter': 1499, 'Pro': 3999 };
+            const price = priceMap[currentPlan];
+            
+            try {
+                const response = await fetch('/activate-plan', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({
+                        plan_name: currentPlan,
+                        price: price
+                    })
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    showToast('Plan ' + currentPlan + ' activated successfully!', 'success');
+                    setTimeout(() => window.location.href = '/profile', 1500);
+                } else {
+                    showToast('Error: ' + result.error, 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('An error occurred. Please try again.', 'error');
+            }
+        }
+
+
+    </script>
+</body>
+</html>

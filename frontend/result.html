@@ -1,4 +1,4 @@
-{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -43,27 +43,6 @@
         padding: 0;
         box-sizing: border-box;
       }
-      
-      /* Ensure all content within result card is contained */
-      .result-card * {
-        max-width: 100%;
-        word-wrap: break-word;
-        overflow-wrap: break-word;
-        box-sizing: border-box;
-      }
-      
-      /* Prevent any element from overflowing the viewport */
-      * {
-        max-width: 100vw;
-        box-sizing: border-box;
-      }
-      
-      /* Specific containment for images and media */
-      img, video, canvas, svg {
-        max-width: 100%;
-        height: auto;
-        box-sizing: border-box;
-      }
       html {
         scroll-behavior: smooth;
       }
@@ -75,155 +54,16 @@
         display: flex;
         flex-direction: column;
         min-height: 100vh;
-        overflow-x: hidden;
-        width: 100%;
-        max-width: 100vw;
       }
+      
+      /* Updated Main Container Padding for Mobile */
       main {
         flex-grow: 1;
         display: flex;
-        align-items: flex-start;
+        align-items: center;
         justify-content: center;
-        padding: 100px 0.5rem 2rem 0.5rem;
-        min-height: calc(100vh - 100px);
-        width: 100%;
-        max-width: 100vw;
-        overflow-x: hidden;
-        box-sizing: border-box;
+        padding: 100px 1rem 2rem 1rem;
       }
-      
-      @media (min-width: 640px) {
-        main {
-          padding: 110px 1rem 2.5rem 1rem;
-        }
-        
-        .result-card {
-          padding: 1.5rem;
-          width: calc(100% - 2rem);
-          max-width: calc(1200px - 2rem);
-        }
-        
-        .image-section, .analysis-section {
-          padding: 1rem;
-        }
-      }
-      
-      @media (min-width: 768px) {
-        main {
-          padding: 120px 1.5rem 3rem 1.5rem;
-        }
-        
-        .result-card {
-          padding: 2rem;
-          width: calc(100% - 3rem);
-          max-width: calc(1200px - 3rem);
-        }
-        
-        .image-section, .analysis-section {
-          padding: 1.25rem;
-        }
-      }
-      
-      @media (min-width: 1024px) {
-        .result-card {
-          padding: 2.5rem;
-        }
-        
-        .image-section, .analysis-section {
-          padding: 1.5rem;
-        }
-      }
-      
-      /* Extra small screens */
-      @media (max-width: 360px) {
-        main {
-          padding: 90px 0.25rem 1.5rem 0.25rem;
-        }
-        
-        .result-card {
-          padding: 0.5rem;
-          border-radius: 8px;
-          width: calc(100% - 0.5rem);
-          max-width: calc(100% - 0.5rem);
-        }
-        
-        .result-header {
-          gap: 0.75rem;
-          margin-bottom: 1.5rem;
-          padding-bottom: 0.75rem;
-        }
-        
-        .result-header h1 {
-          font-size: 1.1rem;
-        }
-        
-        .result-content {
-          gap: 1rem;
-        }
-        
-        .image-section, .analysis-section {
-          padding: 0.5rem;
-        }
-        
-        .section-header h2 {
-          font-size: 1rem;
-        }
-        
-        .stage-grid {
-          gap: 0.5rem;
-          grid-template-columns: 1fr;
-        }
-        
-        .stage-item {
-          padding: 0.5rem;
-        }
-        
-        .btn {
-          padding: 0.625rem 1rem;
-          font-size: 0.85rem;
-        }
-        
-        .btn-sm {
-          padding: 0.4rem 0.8rem;
-          font-size: 0.75rem;
-        }
-        
-        .info-box {
-          padding: 0.75rem;
-        }
-      }
-      
-      /* Small screens */
-      @media (max-width: 480px) and (min-width: 361px) {
-        main {
-          padding: 95px 0.5rem 1.75rem 0.5rem;
-        }
-        
-        .result-card {
-          padding: 0.75rem;
-          width: calc(100% - 1rem);
-          max-width: calc(100% - 1rem);
-        }
-        
-        .result-header {
-          gap: 1rem;
-          margin-bottom: 1.75rem;
-        }
-        
-        .result-content {
-          gap: 1.25rem;
-        }
-        
-        .image-section, .analysis-section {
-          padding: 0.625rem;
-        }
-        
-        .stage-grid {
-          grid-template-columns: 1fr 1fr;
-          gap: 0.625rem;
-        }
-      }
-      
       .navbar {
         position: fixed;
         top: 0;
@@ -247,51 +87,21 @@
         padding: 0 1rem;
       }
       .logo {
-        font-size: 1.25rem;
+        font-size: 1.5rem;
         font-weight: 700;
         color: var(--primary-color);
         text-decoration: none;
       }
-      
-      @media (min-width: 640px) {
-        .logo {
-          font-size: 1.5rem;
-        }
-      }
       .nav-links {
         display: none;
         list-style: none;
-        gap: 1.5rem;
+        gap: 2rem;
         align-items: center;
       }
-      
       @media (min-width: 768px) {
         .nav-links {
           display: flex;
-          gap: 2rem;
         }
-      }
-      
-      .mobile-menu-toggle {
-        display: block;
-        background: none;
-        border: none;
-        color: var(--text-dark);
-        font-size: 1.25rem;
-        cursor: pointer;
-        padding: 0.5rem;
-      }
-      
-      @media (min-width: 768px) {
-        .mobile-menu-toggle {
-          display: none;
-        }
-      }
-      
-      .nav-right {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
       }
       .nav-links a {
         text-decoration: none;
@@ -333,287 +143,99 @@
       .result-card {
         background: var(--white-color);
         border-radius: var(--border-radius);
-        padding: 1rem;
+        padding: 1.5rem;
         border: 1px solid var(--border-color);
         box-shadow: var(--shadow-lg);
-        width: calc(100% - 1rem);
-        max-width: calc(1200px - 1rem);
-        min-width: 0;
-        position: relative;
-        overflow: hidden;
-        box-sizing: border-box;
-        contain: layout style;
-        margin: 0 auto;
-      }
-      
-      .result-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 4px;
-        background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
-        z-index: 1;
+        width: 100%;
+        max-width: 1000px;
       }
       
       @media (min-width: 640px) {
         .result-card {
-          padding: 2rem;
-        }
-      }
-      
-      @media (min-width: 768px) {
-        .result-card {
           padding: 2.5rem;
         }
       }
-      
-      @media (min-width: 1024px) {
-        .result-card {
-          padding: 3rem;
-        }
-      }
+      /* Responsive Header */
       .result-header {
         display: flex;
         flex-direction: column;
         gap: 1rem;
         margin-bottom: 2rem;
-        padding-bottom: 1rem;
-        border-bottom: 2px solid var(--border-color);
         text-align: center;
+      }
+      
+      .result-header h1 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--text-dark);
       }
       
       @media (min-width: 640px) {
         .result-header {
           flex-direction: row;
           justify-content: space-between;
-          align-items: center;
-          gap: 1.5rem;
-          margin-bottom: 2.5rem;
-          padding-bottom: 1.5rem;
           text-align: left;
         }
-      }
-      
-      @media (min-width: 1024px) {
-        .result-header {
-          margin-bottom: 3rem;
-        }
-      }
-      
-      .result-header h1 {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: var(--text-dark);
-        letter-spacing: -0.5px;
-      }
-      
-      @media (min-width: 640px) {
+        
         .result-header h1 {
-          font-size: 1.75rem;
-        }
-      }
-      
-      @media (min-width: 768px) {
-        .result-header h1 {
-          font-size: 2rem;
+          font-size: 1.8rem;
         }
       }
 
-      .result-content {
+      /* Responsive Grid */
+      .result-grid {
         display: grid;
         grid-template-columns: 1fr;
-        gap: 1.5rem;
-        width: 100%;
-        max-width: 100%;
-        overflow: hidden;
-        box-sizing: border-box;
-        min-width: 0; /* Prevent grid items from overflowing */
-      }
-      
-      @media (min-width: 640px) {
-        .result-content {
-          gap: 2rem;
-        }
-      }
-      
-      @media (min-width: 768px) {
-        .result-content {
-          gap: 2.5rem;
-        }
+        gap: 2rem;
       }
       
       @media (min-width: 1024px) {
-        .result-content {
-          grid-template-columns: 45% 55%;
-          gap: 2.5rem;
+        .result-grid {
+          grid-template-columns: 1fr 1fr;
         }
       }
       
-      @media (min-width: 1200px) {
-        .result-content {
-          gap: 3rem;
-        }
-      }
-      
-      /* Section Headers */
-      .section-header {
-        margin-bottom: 1.5rem;
-        padding-bottom: 0.75rem;
-        border-bottom: 2px solid var(--border-color);
-      }
-      
-      .section-header h2 {
-        font-size: 1.25rem;
-        font-weight: 600;
-        color: var(--text-dark);
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        margin: 0;
-      }
-      
-      @media (min-width: 640px) {
-        .section-header h2 {
-          font-size: 1.5rem;
-        }
-      }
-      
-      .section-header i {
-        color: var(--primary-color);
-        font-size: 1.1rem;
-      }
-      
-      @media (min-width: 640px) {
-        .section-header i {
-          font-size: 1.25rem;
-        }
-      }
-      
-      /* Image Section */
       .image-section {
-        display: flex;
-        flex-direction: column;
-        background: linear-gradient(135deg, rgba(243, 244, 246, 0.5) 0%, rgba(249, 250, 251, 0.3) 100%);
-        border-radius: var(--border-radius);
-        padding: 0.75rem;
-        border: 1px solid var(--border-color);
-        width: 100%;
-        max-width: 100%;
-        min-width: 0;
-        overflow: hidden;
-        box-sizing: border-box;
-        contain: layout style;
-      }
-      
-      @media (min-width: 640px) {
-        .image-section {
-          padding: 1.5rem;
-        }
-      }
-      
-      /* Analysis Section */
-      .analysis-section {
-        display: flex;
-        flex-direction: column;
-        background: linear-gradient(135deg, rgba(20, 184, 166, 0.02) 0%, rgba(16, 185, 129, 0.01) 100%);
-        border-radius: var(--border-radius);
-        padding: 0.75rem;
-        border: 1px solid rgba(20, 184, 166, 0.1);
-        width: 100%;
-        max-width: 100%;
-        min-width: 0;
-        overflow: hidden;
-        box-sizing: border-box;
-        contain: layout style;
-      }
-      
-      @media (min-width: 640px) {
-        .analysis-section {
-          padding: 1.5rem;
-        }
-      }
-      
-      /* No Data Styling */
-      .no-data-container {
-        display: none;
-        padding: 3rem 1rem;
-        text-align: center;
-      }
-      
-      .no-data-container.visible {
-        display: block;
-      }
-      
-      .no-data-content {
-        background: var(--white-color);
-        border: 2px solid var(--error-color);
-        border-radius: var(--border-radius);
-        padding: 2rem;
-        max-width: 400px;
-        margin: 0 auto;
-        box-shadow: var(--shadow);
-      }
-      
-      .no-data-content i {
-        font-size: 3rem;
-        color: var(--error-color);
-        margin-bottom: 1rem;
-      }
-      
-      .no-data-content h3 {
-        font-size: 1.5rem;
-        font-weight: 600;
-        color: var(--text-dark);
-        margin-bottom: 1rem;
-      }
-      
-      .no-data-content p {
-        color: var(--text-light);
-        margin-bottom: 1.5rem;
-        font-size: 1rem;
+        position: sticky;
+        top: 100px;
       }
 
+      /* Image Preview Container */
       #previewContainer {
         position: relative;
         width: 100%;
-        max-width: 100%;
-        padding-top: 75%; /* 4:3 Aspect Ratio */
+        height: 300px;
         border: 2px solid var(--primary-color);
         border-radius: var(--border-radius);
         background-color: var(--secondary-color-bg);
         overflow: hidden;
         cursor: grab;
-        box-shadow: var(--shadow);
-        box-sizing: border-box;
-        contain: layout style;
-        margin: 0 auto;
       }
       
       @media (min-width: 640px) {
         #previewContainer {
-          border: 3px solid var(--primary-color);
+          height: auto;
+          padding-top: 75%;
         }
       }
+      
       #previewContainer:active {
         cursor: grabbing;
       }
+      
       #predImage {
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        max-width: 100%;
-        max-height: 100%;
         object-fit: contain;
         user-select: none;
         -webkit-user-drag: none;
         transform-origin: center center;
         transition: transform 0.2s ease;
-        box-sizing: border-box;
       }
+      
       .image-controls {
         display: flex;
         flex-wrap: wrap;
@@ -621,165 +243,54 @@
         margin-top: 1rem;
         justify-content: center;
       }
-      
-      @media (min-width: 640px) {
-        .image-controls {
-          gap: 0.75rem;
-          margin-top: 1.5rem;
-        }
-      }
 
       .details-container {
         display: flex;
         flex-direction: column;
         gap: 1.5rem;
-        height: 100%;
-        width: 100%;
-        max-width: 100%;
-        overflow: hidden;
-        box-sizing: border-box;
-      }
-      
-      @media (min-width: 640px) {
-        .details-container {
-          gap: 2rem;
-        }
       }
       
       .info-box {
         background: var(--white-color);
         border-radius: var(--border-radius);
-        padding: 1.25rem;
-        border: 2px solid var(--border-color);
-        box-shadow: var(--shadow);
-        transition: all var(--transition-speed);
-        width: 100%;
-        max-width: 100%;
-        overflow: hidden;
-        box-sizing: border-box;
-        word-wrap: break-word;
-        overflow-wrap: break-word;
-      }
-      
-      @media (min-width: 640px) {
-        .info-box {
-          padding: 1.5rem;
-        }
-      }
-      
-      @media (min-width: 768px) {
-        .info-box {
-          padding: 2rem;
-        }
-      }
-      .info-box:hover {
-        box-shadow: var(--shadow-lg);
-        transform: translateY(-2px);
+        padding: 1.5rem;
+        border: 1px solid var(--border-color);
       }
       .info-box p.label {
-        font-size: 0.8rem;
+        font-size: 0.9rem;
         color: var(--text-light);
-        margin-bottom: 0.75rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        font-weight: 600;
+        margin-bottom: 0.5rem;
       }
       
-      @media (min-width: 480px) {
-        .info-box p.label {
-          font-size: 0.85rem;
-          margin-bottom: 1rem;
-          letter-spacing: 1px;
-        }
-      }
       #predicted {
-        display: flex;
+        display: inline-flex;
         align-items: center;
         gap: 0.5rem;
-        padding: 0.625rem 1rem;
-        border-radius: 25px;
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
         background-color: var(--primary-color);
         color: white;
-        font-weight: 700;
-        font-size: 0.9rem;
-        box-shadow: 0 4px 12px rgba(20, 184, 166, 0.3);
-        text-align: center;
-        justify-content: center;
-        width: 100%;
-        max-width: 100%;
-        word-wrap: break-word;
-        overflow-wrap: break-word;
+        font-weight: 600;
+        font-size: 1rem;
         white-space: normal;
-        line-height: 1.3;
-        min-height: 2.5rem;
-      }
-      
-      @media (min-width: 480px) {
-        #predicted {
-          gap: 0.75rem;
-          padding: 0.75rem 1.5rem;
-          font-size: 1rem;
-          border-radius: 50px;
-          max-width: 350px;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-      }
-      
-      @media (min-width: 640px) {
-        #predicted {
-          font-size: 1.1rem;
-          max-width: none;
-          width: auto;
-        }
-      }
-      #confidenceText {
-        margin-top: 0.75rem;
-        font-size: 0.9rem;
-        color: var(--text-light);
-        font-weight: 500;
-        text-align: center;
-      }
-      
-      @media (min-width: 480px) {
-        #confidenceText {
-          margin-top: 1rem;
-          font-size: 0.95rem;
-          text-align: left;
-        }
+        word-break: break-word;
       }
       
       #detailsText {
         font-size: 0.95rem;
-        color: var(--text-dark);
-        margin-bottom: 1.25rem;
-        line-height: 1.7;
-        word-wrap: break-word;
-        overflow-wrap: break-word;
-        hyphens: auto;
+        color: var(--text-light);
+        margin-bottom: 1rem;
+        line-height: 1.6;
       }
       
-      @media (min-width: 480px) {
-        #detailsText {
-          font-size: 1rem;
-          margin-bottom: 1.5rem;
-          line-height: 1.8;
-        }
-      }
       #detailsLink {
         color: var(--primary-color);
         text-decoration: none;
-        font-weight: 600;
-        font-size: 1rem;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        transition: all var(--transition-speed);
+        font-weight: 500;
       }
+      
       #detailsLink:hover {
-        gap: 0.75rem;
-        color: #0d9488;
+        text-decoration: underline;
       }
 
       .btn {
@@ -787,7 +298,7 @@
         align-items: center;
         justify-content: center;
         gap: 0.5rem;
-        padding: 0.75rem 1.25rem;
+        padding: 0.7rem 1.5rem;
         border-radius: 50px;
         text-decoration: none;
         font-weight: 600;
@@ -795,74 +306,65 @@
         border: none;
         cursor: pointer;
         font-size: 0.9rem;
-        box-shadow: var(--shadow);
-        white-space: nowrap;
+        width: 100%;
       }
       
-      @media (min-width: 480px) {
+      @media (min-width: 640px) {
         .btn {
-          gap: 0.625rem;
-          padding: 0.875rem 1.5rem;
-          font-size: 1rem;
+          width: auto;
         }
       }
       
-      @media (min-width: 768px) {
-        .btn {
-          padding: 0.875rem 1.75rem;
-        }
-      }
-      .btn:hover {
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-lg);
-      }
       .btn-primary {
         background: var(--accent-color);
         color: white;
       }
+      
       .btn-primary:hover {
         background-color: #059669;
       }
+      
       .btn-secondary {
         background: var(--white-color);
         color: var(--text-dark);
-        border: 2px solid var(--border-color);
+        border: 1px solid var(--border-color);
       }
+      
       .btn-secondary:hover {
         background-color: var(--secondary-color-bg);
-        border-color: var(--primary-color);
       }
+      
       .btn-sm {
         padding: 0.5rem 1rem;
+        width: auto;
         font-size: 0.8rem;
       }
       
-      @media (min-width: 480px) {
-        .btn-sm {
-          padding: 0.625rem 1.25rem;
-          font-size: 0.9rem;
-        }
-      }
-      
-      .action-buttons {
+      /* Button Group Responsive */
+      .btn-group {
         display: flex;
         flex-direction: column;
-        gap: 0.75rem;
-        margin-top: 1rem;
-        width: 100%;
-        max-width: 100%;
-        min-width: 0;
-        overflow: hidden;
+        gap: 1rem;
       }
       
-      @media (min-width: 480px) {
-        .action-buttons {
+      @media (min-width: 640px) {
+        .btn-group {
           flex-direction: row;
-          flex-wrap: wrap;
-          gap: 1rem;
         }
       }
 
+      #noData {
+        display: none;
+        text-align: center;
+        color: var(--error-color);
+        border: 1px solid var(--error-color);
+        border-radius: var(--border-radius);
+        padding: 2rem;
+        background-color: rgba(239, 68, 68, 0.05);
+      }
+      #noData.visible {
+        display: block;
+      }
       .hidden {
         display: none;
       }
@@ -877,18 +379,16 @@
         max-width: 1200px;
         margin: 0 auto;
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1.5rem;
-        margin-bottom: 2rem;
-        padding: 0 1rem;
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        margin-bottom: 3rem;
+        text-align: center;
       }
       
-      @media (max-width: 480px) {
+      @media (min-width: 768px) {
         .footer-content {
-          grid-template-columns: 1fr;
-          gap: 1rem;
-          margin-bottom: 1.5rem;
-          padding: 0 0.75rem;
+          grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+          text-align: left;
         }
       }
       .footer-section h3 {
@@ -930,28 +430,16 @@
       /* Session timeout warning */
       .session-warning {
         position: fixed;
-        top: 70px;
-        left: 0.5rem;
-        right: 0.5rem;
+        top: 80px;
+        right: 20px;
         background: #f59e0b;
         color: white;
-        padding: 0.75rem;
+        padding: 1rem 1.5rem;
         border-radius: 8px;
         box-shadow: var(--shadow-lg);
         z-index: 1001;
         display: none;
-        max-width: none;
-        font-size: 0.9rem;
-      }
-      
-      @media (min-width: 640px) {
-        .session-warning {
-          top: 80px;
-          left: auto;
-          right: 20px;
-          padding: 1rem 1.5rem;
-          max-width: 300px;
-        }
+        max-width: 300px;
       }
       .session-warning.show {
         display: block;
@@ -965,31 +453,22 @@
         opacity: 0.9;
       }
       
-      /* Disease Stage Styles */
+      /* Disease Stage Analysis */
       .stage-box {
-        background: linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(251, 191, 36, 0.04) 100%);
-        border: 2px solid rgba(245, 158, 11, 0.3);
+        background: linear-gradient(135deg, rgba(245, 158, 11, 0.06) 0%, rgba(251, 191, 36, 0.03) 100%);
+        border: 1px solid rgba(245, 158, 11, 0.25);
       }
       
       .stage-box:hover {
-        border-color: rgba(245, 158, 11, 0.5);
+        border-color: rgba(245, 158, 11, 0.4);
       }
       
       .stage-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-        gap: 0.75rem;
+        gap: 0.875rem;
         margin-top: 1rem;
         margin-bottom: 1.25rem;
-        width: 100%;
-        min-width: 0;
-      }
-      
-      @media (min-width: 480px) {
-        .stage-grid {
-          gap: 1rem;
-          margin-bottom: 1.5rem;
-        }
       }
       
       @media (min-width: 640px) {
@@ -998,30 +477,31 @@
         }
       }
       
-      .stage-item {
-        background: var(--white-color);
-        padding: 0.75rem;
-        border-radius: 8px;
-        border: 2px solid var(--border-color);
-        text-align: center;
-        transition: all var(--transition-speed);
-        min-width: 0;
-        overflow: hidden;
-        word-wrap: break-word;
-        overflow-wrap: break-word;
-      }
-      
-      @media (min-width: 480px) {
-        .stage-item {
-          padding: 1rem;
-          border-radius: 10px;
+      @media (max-width: 480px) {
+        .stage-grid {
+          gap: 0.5rem;
+          margin-top: 0.75rem;
+          margin-bottom: 1rem;
         }
       }
       
+      .stage-item {
+        background: rgba(255, 255, 255, 0.5);
+        padding: 1rem;
+        border-radius: 8px;
+        border: 1px solid rgba(245, 158, 11, 0.2);
+        text-align: center;
+        transition: all var(--transition-speed);
+      }
+      
+      [data-theme="dark"] .stage-item {
+        background: rgba(31, 41, 55, 0.5);
+      }
+      
       .stage-item:hover {
-        transform: translateY(-3px);
-        box-shadow: var(--shadow-lg);
-        border-color: #f59e0b;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15);
+        border-color: rgba(245, 158, 11, 0.4);
       }
       
       .stage-label {
@@ -1029,17 +509,9 @@
         font-size: 0.7rem;
         color: var(--text-light);
         text-transform: uppercase;
-        letter-spacing: 0.3px;
-        font-weight: 600;
-        margin-bottom: 0.4rem;
-      }
-      
-      @media (min-width: 480px) {
-        .stage-label {
-          font-size: 0.75rem;
-          letter-spacing: 0.5px;
-          margin-bottom: 0.5rem;
-        }
+        letter-spacing: 0.8px;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
       }
       
       .stage-value {
@@ -1047,41 +519,66 @@
         font-size: 1rem;
         font-weight: 700;
         color: #f59e0b;
+        line-height: 1.3;
         word-break: break-word;
       }
       
-      @media (min-width: 480px) {
+      @media (max-width: 768px) {
+        .stage-item {
+          padding: 0.75rem;
+          border-radius: 6px;
+        }
+        
+        .stage-label {
+          font-size: 0.65rem;
+          margin-bottom: 0.375rem;
+        }
+        
         .stage-value {
-          font-size: 1.1rem;
+          font-size: 0.9rem;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        .stage-item {
+          padding: 0.625rem 0.5rem;
+        }
+        
+        .stage-item:hover {
+          transform: none;
+        }
+        
+        .stage-label {
+          font-size: 0.6rem;
+          letter-spacing: 0.5px;
+        }
+        
+        .stage-value {
+          font-size: 0.85rem;
         }
       }
       
       .stage-notes {
-        background: var(--white-color);
-        padding: 1rem;
+        background: rgba(255, 255, 255, 0.5);
+        padding: 1.25rem;
         border-radius: 8px;
-        border: 2px solid var(--border-color);
+        border: 1px solid rgba(245, 158, 11, 0.2);
       }
       
-      @media (min-width: 480px) {
-        .stage-notes {
-          padding: 1.25rem;
-          border-radius: 10px;
-        }
+      [data-theme="dark"] .stage-notes {
+        background: rgba(31, 41, 55, 0.5);
       }
       
       .stage-notes-label {
-        font-size: 0.85rem;
+        font-size: 0.75rem;
         font-weight: 700;
         color: var(--text-dark);
-        margin-bottom: 0.5rem;
-      }
-      
-      @media (min-width: 480px) {
-        .stage-notes-label {
-          font-size: 0.9rem;
-          margin-bottom: 0.75rem;
-        }
+        margin-bottom: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
       }
       
       .stage-notes-text {
@@ -1089,36 +586,45 @@
         color: var(--text-dark);
         line-height: 1.6;
         margin: 0;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
       }
       
-      @media (min-width: 480px) {
+      @media (max-width: 768px) {
+        .stage-notes {
+          padding: 1rem;
+          border-radius: 6px;
+        }
+        
+        .stage-notes-label {
+          font-size: 0.7rem;
+          margin-bottom: 0.5rem;
+        }
+        
         .stage-notes-text {
-          font-size: 0.95rem;
-          line-height: 1.7;
+          font-size: 0.85rem;
+          line-height: 1.5;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        .stage-notes {
+          padding: 0.75rem;
+        }
+        
+        .stage-notes-label {
+          font-size: 0.65rem;
+          letter-spacing: 0.5px;
+        }
+        
+        .stage-notes-text {
+          font-size: 0.8rem;
         }
       }
     </style>
   </head>
   <body data-theme="dark">
-    <nav class="navbar" id="navbar">
-      <div class="nav-container">
-        <a href="/" class="logo">Hair & Scalp AI</a>
-        <ul class="nav-links">
-          <li><a href="/">Home</a></li>
-          <li><a href="/diseasetype.html">Explore Diseases</a></li>
-          <li><a href="/find-specialist.html">Find a Specialist</a></li>
-          <li><a href="/logout" class="logout-btn">Logout</a></li>
-        </ul>
-        <div class="nav-right">
-          <button class="mobile-menu-toggle" id="mobileMenuToggle">
-            <i class="fas fa-bars"></i>
-          </button>
-          <button class="theme-toggle" id="themeToggle">
-            <i class="fas fa-moon"></i>
-          </button>
-        </div>
-      </div>
-    </nav>
+        {% include "navbar.html" %}
 
     <!-- Session timeout warning -->
     <div id="sessionWarning" class="session-warning">
@@ -1137,23 +643,12 @@
           </button>
         </div>
 
-        <div id="noData" class="no-data-container">
-          <div class="no-data-content">
-            <i class="fas fa-exclamation-triangle"></i>
-            <h3>No Prediction Data Found</h3>
-            <p>Please go back and try uploading an image again.</p>
-            <button onclick="window.location.href='/predict'" class="btn btn-primary">
-              <i class="fas fa-upload"></i> Try Again
-            </button>
-          </div>
+        <div id="noData">
+          No prediction data found. Please go back and try again.
         </div>
 
-        <div id="content" class="result-content">
-          <!-- Image Analysis Section -->
-          <div class="image-section">
-            <div class="section-header">
-              <h2><i class="fas fa-image"></i> Uploaded Image</h2>
-            </div>
+        <div id="content" class="result-grid">
+          <div>
             <div id="previewContainer">
               <img id="predImage" alt="Uploaded Scalp Image" class="hidden" />
             </div>
@@ -1170,12 +665,7 @@
             </div>
           </div>
 
-          <!-- Analysis Results Section -->
-          <div class="analysis-section">
-            <div class="section-header">
-              <h2><i class="fas fa-chart-line"></i> Analysis Results</h2>
-            </div>
-            <div class="details-container"></div>
+          <div class="details-container">
             <div class="info-box">
               <p class="label">🎯 Predicted Condition</p>
               <div id="predicted">Loading...</div>
@@ -1214,14 +704,13 @@
               <p id="detailsText">Loading details...</p>
               <a id="detailsLink" href="" target="_blank">Learn more →</a>
             </div>
-            <div class="action-buttons">
+            <div class="btn-group">
               <button id="downloadBtn" class="btn btn-primary">
                 <i class="fas fa-download"></i> Download Report (PDF)
               </button>
               <button id="backBtn2" class="btn btn-secondary">
                 <i class="fas fa-upload"></i> Upload Another
               </button>
-            </div>
             </div>
           </div>
         </div>
@@ -1262,15 +751,6 @@
         themeToggle.querySelector("i").className =
           currentTheme === "dark" ? "fas fa-sun" : "fas fa-moon";
       });
-
-      // Mobile menu toggle (basic functionality for future enhancement)
-      const mobileMenuToggle = document.getElementById("mobileMenuToggle");
-      if (mobileMenuToggle) {
-        mobileMenuToggle.addEventListener("click", () => {
-          // For now, just show an alert - can be enhanced with a dropdown menu later
-          alert("Mobile menu - Navigation options:\n• Home\n• Explore Diseases\n• Find a Specialist\n• Logout");
-        });
-      }
 
       // --- PAGE-SPECIFIC SCRIPTS ---
       const diseaseInfo = {
@@ -1350,11 +830,17 @@
         if (stageInfo && stageInfo.stage && predictionData.predicted_class !== "No Disease") {
           console.log("Stage info found:", stageInfo);
           document.getElementById("stageInfo").classList.remove("hidden");
+          if (stageInfo.stage === "Invalid Date") {
+            document.getElementById("diseaseStage").style.color = "var(--error-color)";
+            document.getElementById("stageSeverity").style.color = "var(--error-color)";
+            document.getElementById("stageProgression").style.color = "var(--error-color)";
+          }
           document.getElementById("diseaseStage").textContent = stageInfo.stage || "-";
           document.getElementById("stageSeverity").textContent = stageInfo.severity || "-";
-          document.getElementById("stageDuration").textContent = stageInfo.days_elapsed ? `${stageInfo.days_elapsed} days` : "-";
+          document.getElementById("stageDuration").textContent = stageInfo.days_elapsed >= 0 ? `${stageInfo.days_elapsed} days` : "-";
           document.getElementById("stageProgression").textContent = stageInfo.progression_rate || "-";
           document.getElementById("stageDescription").textContent = stageInfo.clinical_notes || "No additional assessment available.";
+
         } else {
           console.log("No stage info available or No Disease detected");
         }
@@ -1374,34 +860,17 @@
         controls.classList.remove("hidden");
       }
 
-      // Zoom & Pan Logic with Constraints
+      // Zoom & Pan Logic
       let scale = 1,
         tx = 0,
         ty = 0;
       let isDragging = false,
         startX = 0,
         startY = 0;
-      
-      const constrainTransform = () => {
-        const container = document.getElementById("previewContainer");
-        if (!container) return;
-        
-        const containerRect = container.getBoundingClientRect();
-        const maxTranslateX = containerRect.width * 0.1;
-        const maxTranslateY = containerRect.height * 0.1;
-        
-        // Constrain translation to prevent overflow
-        tx = Math.max(-maxTranslateX, Math.min(maxTranslateX, tx));
-        ty = Math.max(-maxTranslateY, Math.min(maxTranslateY, ty));
-      };
-      
-      const applyTransform = () => {
-        constrainTransform();
-        predImage.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`;
-      };
-      
+      const applyTransform = () =>
+        (predImage.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`);
       document.getElementById("zoomIn").onclick = () => {
-        scale = Math.min(3, scale + 0.2); // Reduced max scale to prevent overflow
+        scale = Math.min(4, scale + 0.2);
         applyTransform();
       };
       document.getElementById("zoomOut").onclick = () => {
@@ -1433,7 +902,7 @@
         }
       });
 
-      // PDF Download Logic
+      // PDF Download Logic - Professional Clinical Report
       document.getElementById("downloadBtn").onclick = () => {
         if (!predictionData) return;
         const { jsPDF } = window.jspdf;
@@ -1441,160 +910,240 @@
         
         const pageWidth = doc.internal.pageSize.getWidth();
         const pageHeight = doc.internal.pageSize.getHeight();
-        const margin = 20;
+        const margin = 15;
         const contentWidth = pageWidth - (margin * 2);
-        let yPos = margin;
+        let yPos = 0;
 
-        // Header with background
+        // Professional Header with Gradient Effect
         doc.setFillColor(20, 184, 166);
-        doc.rect(0, 0, pageWidth, 35, 'F');
+        doc.rect(0, 0, pageWidth, 40, 'F');
         
+        // Clinic Logo/Title
         doc.setTextColor(255, 255, 255);
         doc.setFont("helvetica", "bold");
-        doc.setFontSize(22);
-        doc.text("Hair & Scalp Analysis Report", pageWidth / 2, 15, { align: "center" });
+        doc.setFontSize(24);
+        doc.text("HAIR & SCALP ANALYSIS REPORT", pageWidth / 2, 18, { align: "center" });
         
-        doc.setFontSize(11);
+        // Subtitle
+        doc.setFontSize(10);
         doc.setFont("helvetica", "normal");
         const reportDate = new Date().toLocaleDateString('en-US', { 
           year: 'numeric', 
           month: 'long', 
           day: 'numeric' 
         });
-        doc.text(`Generated: ${reportDate}`, pageWidth / 2, 25, { align: "center" });
+        doc.text(`Generated: ${reportDate}`, pageWidth / 2, 28, { align: "center" });
         
-        yPos = 50;
+        // Report ID
+        const reportId = `RPT-${Date.now().toString().slice(-8)}`;
+        doc.setFontSize(8);
+        doc.text(`Report ID: ${reportId}`, pageWidth / 2, 35, { align: "center" });
+        
+        yPos = 48;
 
-        // Client Details Section
-        doc.setFillColor(243, 244, 246);
-        doc.roundedRect(margin, yPos, contentWidth, 35, 3, 3, 'F');
+        // Patient Information Section
+        doc.setFillColor(240, 248, 255);
+        doc.roundedRect(margin, yPos, contentWidth, 32, 2, 2, 'F');
+        doc.setDrawColor(20, 184, 166);
+        doc.setLineWidth(0.3);
+        doc.roundedRect(margin, yPos, contentWidth, 32, 2, 2, 'S');
         
         doc.setTextColor(31, 41, 55);
         doc.setFont("helvetica", "bold");
-        doc.setFontSize(14);
-        doc.text("Patient Information", margin + 5, yPos + 8);
+        doc.setFontSize(12);
+        doc.text("PATIENT INFORMATION", margin + 4, yPos + 7);
         
         doc.setFont("helvetica", "normal");
-        doc.setFontSize(11);
-        doc.text(`Name: ${clientName}`, margin + 5, yPos + 18);
-        doc.text(`Date of Birth: ${clientDOB}`, margin + 5, yPos + 25);
-        doc.text(`Contact: ${clientContact}`, margin + 5, yPos + 32);
-        
-        yPos += 45;
-
-        // Prediction Result Section
-        doc.setFillColor(243, 244, 246);
-        doc.roundedRect(margin, yPos, contentWidth, 30, 3, 3, 'F');
-        
+        doc.setFontSize(10);
+        doc.setTextColor(55, 65, 81);
+        doc.text(`Name:`, margin + 4, yPos + 15);
         doc.setFont("helvetica", "bold");
-        doc.setFontSize(14);
-        doc.text("Analysis Result", margin + 5, yPos + 8);
+        doc.text(`${clientName}`, margin + 25, yPos + 15);
         
+        doc.setFont("helvetica", "normal");
+        doc.text(`Date of Birth:`, margin + 4, yPos + 22);
         doc.setFont("helvetica", "bold");
-        doc.setFontSize(12);
-        doc.setTextColor(20, 184, 166);
-        doc.text(`Condition: ${predictionData.predicted_class}`, margin + 5, yPos + 18);
+        doc.text(`${clientDOB}`, margin + 35, yPos + 22);
         
-        // Add confidence if available
-        if (predictionData.confidence) {
-          doc.setFont("helvetica", "normal");
-          doc.setTextColor(107, 114, 128);
-          doc.text(`Confidence: ${(predictionData.confidence * 100).toFixed(1)}%`, margin + 5, yPos + 25);
-        }
+        doc.setFont("helvetica", "normal");
+        doc.text(`Contact:`, margin + 4, yPos + 29);
+        doc.setFont("helvetica", "bold");
+        doc.text(`${clientContact}`, margin + 25, yPos + 29);
         
         yPos += 40;
 
-        // Stage Information Section (if available)
+        // Diagnosis Section
+        doc.setFillColor(240, 253, 244);
+        doc.roundedRect(margin, yPos, contentWidth, 28, 2, 2, 'F');
+        doc.setDrawColor(16, 185, 129);
+        doc.setLineWidth(0.5);
+        doc.roundedRect(margin, yPos, contentWidth, 28, 2, 2, 'S');
+        
+        doc.setTextColor(31, 41, 55);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(12);
+        doc.text("ANALYSIS RESULT", margin + 4, yPos + 7);
+        
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(14);
+        doc.setTextColor(20, 184, 166);
+        doc.text(`Condition:`, margin + 4, yPos + 17);
+        doc.text(`${predictionData.predicted_class}`, margin + 35, yPos + 17);
+        
+        if (predictionData.confidence) {
+          doc.setFont("helvetica", "normal");
+          doc.setFontSize(10);
+          doc.setTextColor(107, 114, 128);
+          doc.text(`Confidence Level: ${(predictionData.confidence * 100).toFixed(1)}%`, margin + 4, yPos + 24);
+        }
+        
+        yPos += 36;
+
+        // Disease Stage Analysis (if available)
         const stageInfo = predictionData.stage_info;
         if (stageInfo && stageInfo.stage && predictionData.predicted_class !== "No Disease") {
-          doc.setFillColor(254, 243, 199);
-          doc.roundedRect(margin, yPos, contentWidth, 40, 3, 3, 'F');
+          doc.setFillColor(255, 251, 235);
+          doc.roundedRect(margin, yPos, contentWidth, 48, 2, 2, 'F');
+          doc.setDrawColor(245, 158, 11);
+          doc.setLineWidth(0.5);
+          doc.roundedRect(margin, yPos, contentWidth, 48, 2, 2, 'S');
           
           doc.setTextColor(31, 41, 55);
           doc.setFont("helvetica", "bold");
-          doc.setFontSize(14);
-          doc.text("Disease Stage Analysis", margin + 5, yPos + 8);
+          doc.setFontSize(12);
+          doc.text("DISEASE STAGE ANALYSIS", margin + 4, yPos + 7);
           
+          // Stage details in a grid
           doc.setFont("helvetica", "normal");
-          doc.setFontSize(10);
+          doc.setFontSize(9);
           doc.setTextColor(55, 65, 81);
           
-          const col1X = margin + 5;
-          const col2X = margin + contentWidth / 2;
+          const col1 = margin + 4;
+          const col2 = margin + contentWidth / 2 + 2;
+          const labelWidth = 25;
           
-          doc.text(`Stage: ${stageInfo.stage || 'N/A'}`, col1X, yPos + 18);
-          doc.text(`Severity: ${stageInfo.severity || 'N/A'}`, col2X, yPos + 18);
-          doc.text(`Duration: ${stageInfo.days_elapsed ? stageInfo.days_elapsed + ' days' : 'N/A'}`, col1X, yPos + 26);
-          doc.text(`Progression: ${stageInfo.progression_rate || 'N/A'}`, col2X, yPos + 26);
+          // Row 1
+          doc.setFont("helvetica", "bold");
+          doc.text("Stage:", col1, yPos + 16);
+          doc.setFont("helvetica", "normal");
+          doc.setTextColor(245, 158, 11);
+          doc.text(`${stageInfo.stage || 'N/A'}`, col1 + labelWidth, yPos + 16);
           
+          doc.setFont("helvetica", "bold");
+          doc.setTextColor(55, 65, 81);
+          doc.text("Severity:", col2, yPos + 16);
+          doc.setFont("helvetica", "normal");
+          doc.setTextColor(245, 158, 11);
+          doc.text(`${stageInfo.severity || 'N/A'}`, col2 + labelWidth, yPos + 16);
+          
+          // Row 2
+          doc.setFont("helvetica", "bold");
+          doc.setTextColor(55, 65, 81);
+          doc.text("Duration:", col1, yPos + 23);
+          doc.setFont("helvetica", "normal");
+          doc.setTextColor(245, 158, 11);
+          doc.text(`${stageInfo.days_elapsed ? stageInfo.days_elapsed + ' days' : 'N/A'}`, col1 + labelWidth, yPos + 23);
+          
+          doc.setFont("helvetica", "bold");
+          doc.setTextColor(55, 65, 81);
+          doc.text("Progression:", col2, yPos + 23);
+          doc.setFont("helvetica", "normal");
+          doc.setTextColor(245, 158, 11);
+          doc.text(`${stageInfo.progression_rate || 'N/A'}`, col2 + labelWidth, yPos + 23);
+          
+          // Clinical Notes
           if (stageInfo.clinical_notes) {
-            doc.setFont("helvetica", "italic");
+            doc.setFont("helvetica", "bold");
             doc.setFontSize(9);
-            const splitNotes = doc.splitTextToSize(stageInfo.clinical_notes, contentWidth - 10);
-            doc.text(splitNotes, margin + 5, yPos + 34);
+            doc.setTextColor(55, 65, 81);
+            doc.text("Clinical Assessment:", col1, yPos + 32);
+            
+            doc.setFont("helvetica", "italic");
+            doc.setFontSize(8);
+            doc.setTextColor(75, 85, 99);
+            const splitNotes = doc.splitTextToSize(stageInfo.clinical_notes, contentWidth - 8);
+            doc.text(splitNotes, col1, yPos + 38);
           }
           
-          yPos += 50;
+          yPos += 56;
         }
 
         // Condition Details Section
+        doc.setFillColor(249, 250, 251);
+        const detailText = diseaseInfo[predictionData.predicted_class] || "No additional details available.";
+        const splitDetails = doc.splitTextToSize(detailText, contentWidth - 8);
+        const detailHeight = (splitDetails.length * 5) + 14;
+        
+        doc.roundedRect(margin, yPos, contentWidth, detailHeight, 2, 2, 'F');
+        doc.setDrawColor(209, 213, 219);
+        doc.setLineWidth(0.3);
+        doc.roundedRect(margin, yPos, contentWidth, detailHeight, 2, 2, 'S');
+        
         doc.setTextColor(31, 41, 55);
         doc.setFont("helvetica", "bold");
-        doc.setFontSize(14);
-        doc.text("Condition Details", margin, yPos);
-        
-        yPos += 8;
-        
-        const detailText = diseaseInfo[predictionData.predicted_class] || "No details available.";
-        const splitDetails = doc.splitTextToSize(detailText, contentWidth);
+        doc.setFontSize(12);
+        doc.text("CONDITION DETAILS", margin + 4, yPos + 7);
         
         doc.setFont("helvetica", "normal");
-        doc.setFontSize(11);
+        doc.setFontSize(9);
         doc.setTextColor(55, 65, 81);
-        doc.text(splitDetails, margin, yPos);
+        doc.text(splitDetails, margin + 4, yPos + 14);
         
-        yPos += (splitDetails.length * 6) + 10;
+        yPos += detailHeight + 6;
 
-        // Uploaded Image Section
-        if (imageData && yPos + 70 < pageHeight - 40) {
+        // Analyzed Image Section
+        if (imageData && yPos + 55 < pageHeight - 45) {
           doc.setFont("helvetica", "bold");
-          doc.setFontSize(14);
+          doc.setFontSize(12);
           doc.setTextColor(31, 41, 55);
-          doc.text("Analyzed Image", margin, yPos);
+          doc.text("ANALYZED IMAGE", margin + 4, yPos);
           
-          yPos += 5;
+          yPos += 4;
           
-          // Add border around image
+          // Professional image border
           doc.setDrawColor(20, 184, 166);
-          doc.setLineWidth(0.5);
-          doc.rect(margin, yPos, 80, 60);
+          doc.setLineWidth(1);
+          doc.roundedRect(margin, yPos, 70, 50, 2, 2, 'S');
           
-          doc.addImage(imageData, "JPEG", margin + 1, yPos + 1, 78, 58);
+          doc.addImage(imageData, "JPEG", margin + 1, yPos + 1, 68, 48);
           
-          yPos += 65;
+          yPos += 54;
         }
 
-        // Disclaimer Section
+        // Professional Disclaimer
+        const disclaimerY = pageHeight - 38;
         doc.setFillColor(254, 243, 199);
-        doc.roundedRect(margin, pageHeight - 35, contentWidth, 20, 3, 3, 'F');
+        doc.roundedRect(margin, disclaimerY, contentWidth, 24, 2, 2, 'F');
+        doc.setDrawColor(245, 158, 11);
+        doc.setLineWidth(0.3);
+        doc.roundedRect(margin, disclaimerY, contentWidth, 24, 2, 2, 'S');
         
-        doc.setFontSize(9);
+        doc.setFontSize(8);
         doc.setFont("helvetica", "bold");
         doc.setTextColor(146, 64, 14);
-        doc.text("Important Disclaimer", margin + 5, pageHeight - 28);
+        doc.text("⚠ IMPORTANT DISCLAIMER", margin + 4, disclaimerY + 6);
         
         doc.setFont("helvetica", "normal");
-        doc.setFontSize(8);
+        doc.setFontSize(7);
+        doc.setTextColor(120, 53, 15);
         const disclaimer = "This AI-generated report is for informational purposes only and should not be considered as medical advice. Please consult with a qualified healthcare professional for proper diagnosis and treatment.";
-        const splitDisclaimer = doc.splitTextToSize(disclaimer, contentWidth - 10);
-        doc.text(splitDisclaimer, margin + 5, pageHeight - 22);
+        const splitDisclaimer = doc.splitTextToSize(disclaimer, contentWidth - 8);
+        doc.text(splitDisclaimer, margin + 4, disclaimerY + 11);
 
-        // Footer
-        doc.setFontSize(8);
-        doc.setTextColor(150, 150, 150);
-        doc.text("Hair & Scalp AI - Advanced Disease Prediction System", pageWidth / 2, pageHeight - 8, { align: "center" });
+        // Professional Footer
+        doc.setDrawColor(20, 184, 166);
+        doc.setLineWidth(0.5);
+        doc.line(margin, pageHeight - 10, pageWidth - margin, pageHeight - 10);
+        
+        doc.setFontSize(7);
+        doc.setTextColor(107, 114, 128);
+        doc.setFont("helvetica", "normal");
+        doc.text("Hair & Scalp AI - Advanced Disease Prediction System", pageWidth / 2, pageHeight - 6, { align: "center" });
+        doc.text(`Page 1 of 1`, pageWidth - margin, pageHeight - 6, { align: "right" });
 
-        doc.save(`Scalp_Report_${predictionData.predicted_class.replace(/\s+/g, "_")}.pdf`);
+        // Save with professional filename
+        const fileName = `Hair_Scalp_Report_${clientName.replace(/\s+/g, '_')}_${reportDate.replace(/\s+/g, '_')}.pdf`;
+        doc.save(fileName);
       };
 
       // Session timeout management
@@ -1656,3 +1205,5 @@
 
   </body>
 </html>
+
+
