@@ -125,7 +125,24 @@ class MLModelService:
                     "progression_rate": "Error",
                     "clinical_notes": "Symptom start date cannot be in the future."
                 }
-            
+
+            # The <input type="date"> this comes from has no year floor, so a
+            # mistyped/partial year (easy to fat-finger on a mobile numeric
+            # keypad, e.g. "0087" instead of "2024") silently parses to a
+            # valid-but-absurd date and used to show up as stage results
+            # like "707849 days" / "Stage IV - Advanced" instead of an error.
+            MAX_PLAUSIBLE_DAYS = 3650  # 10 years — generous even for chronic conditions
+            if days_elapsed > MAX_PLAUSIBLE_DAYS:
+                return {
+                    "stage": "Invalid Date",
+                    "stage_number": None,
+                    "severity": "Error",
+                    "days_elapsed": days_elapsed,
+                    "weeks_elapsed": 0,
+                    "progression_rate": "Error",
+                    "clinical_notes": f"The symptom start date entered ({symptom_start_date}) is more than 10 years ago — please double-check the year and try again."
+                }
+
             # Disease-specific stage calculation
             stage_info = self._calculate_disease_specific_stage(
                 predicted_class, confidence, days_elapsed, weeks_elapsed

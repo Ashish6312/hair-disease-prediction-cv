@@ -1162,6 +1162,18 @@
             showToast("Please fill out all client details including symptom start date!", "info");
             return;
           }
+          // predictBtn is type="button", not type="submit", so the date
+          // input's min/max attributes never get enforced by the browser —
+          // check them by hand or a mistyped year sails straight through.
+          const symptomInputEl = document.getElementById("symptomStartDate");
+          if (symptomInputEl.min && symptomStartDate < symptomInputEl.min) {
+            showToast("Symptom start date looks off (more than 10 years ago) — please re-check it.", "info");
+            return;
+          }
+          if (symptomInputEl.max && symptomStartDate > symptomInputEl.max) {
+            showToast("Symptom start date can't be in the future.", "info");
+            return;
+          }
 
           const file = fileInput.files[0];
           const formData = new FormData();
@@ -1251,8 +1263,19 @@
       // Start timer when page loads
       startSessionTimer();
 
-      // Set max date for symptom start date to today
-      document.getElementById('symptomStartDate').max = new Date().toISOString().split('T')[0];
+      // Bound the symptom-start date picker to today on the high end and
+      // 10 years back on the low end. Without a min, a mistyped/partial
+      // year (easy to fat-finger on a mobile numeric keypad) silently
+      // parses to a valid-but-absurd date and produces nonsense results
+      // like "707849 days" / "Stage IV" on the results page.
+      (function boundSymptomDate() {
+        const input = document.getElementById('symptomStartDate');
+        const today = new Date();
+        input.max = today.toISOString().split('T')[0];
+        const tenYearsAgo = new Date(today);
+        tenYearsAgo.setFullYear(tenYearsAgo.getFullYear() - 10);
+        input.min = tenYearsAgo.toISOString().split('T')[0];
+      })();
 
       // Reset timer on user activity
       ["click", "keypress", "scroll", "mousemove"].forEach((event) => {
