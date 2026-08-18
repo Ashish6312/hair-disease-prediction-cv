@@ -472,7 +472,7 @@
   document.addEventListener('DOMContentLoaded', () => {
     const trigger = document.getElementById('dropdownTrigger');
     const menu = document.getElementById('dropdownMenu');
-    
+
     if (trigger && menu) {
       trigger.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -486,6 +486,59 @@
       });
     }
   });
+
+  // Auth-state Nav Sync — reflect real login state in the navbar (dropdown vs Login button)
+  const AUTH_BACKEND = 'https://hair-scalp-backend.onrender.com';
+  (function syncAuthNav() {
+    const dropdown = document.getElementById('userDropdown');
+    const loginBtn = document.querySelector('.login-btn');
+
+    function applyAuthed(user) {
+      if (dropdown) {
+        dropdown.style.display = '';
+        const nameEl = dropdown.querySelector('.user-name');
+        if (nameEl) nameEl.textContent = user.username || user.email || 'Account';
+      }
+      if (loginBtn) loginBtn.style.display = 'none';
+    }
+    function applyGuest() {
+      if (dropdown) dropdown.style.display = 'none';
+      if (loginBtn) loginBtn.style.display = '';
+      localStorage.removeItem('user');
+    }
+
+    if (dropdown) dropdown.style.display = 'none'; // hide until we know, avoid flash of wrong state
+    const cached = localStorage.getItem('user');
+    if (cached) {
+      try { applyAuthed(JSON.parse(cached)); } catch (e) {}
+    }
+
+    fetch(`${AUTH_BACKEND}/check-auth`, { credentials: 'include' })
+      .then(r => r.json())
+      .then(data => {
+        if (data.authenticated) {
+          const user = { username: data.username, email: data.email, plan: data.plan };
+          localStorage.setItem('user', JSON.stringify(user));
+          applyAuthed(user);
+        } else {
+          applyGuest();
+        }
+      })
+      .catch(() => {});
+
+    // Logout links point at the old Django /logout route, which doesn't exist on
+    // this static export — hit the real backend session-logout endpoint instead.
+    document.querySelectorAll('a[href="/logout"], a.logout-link').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        fetch(`${AUTH_BACKEND}/api/logout`, { method: 'POST', credentials: 'include' })
+          .finally(() => {
+            localStorage.removeItem('user');
+            window.location.href = 'index.html';
+          });
+      });
+    });
+  })();
 
   function showToast(message, type = 'success') {
     const container = document.getElementById('toastContainer');
@@ -540,17 +593,14 @@
                 <div class="avatar-circle">
                     <i class="fas fa-user"></i>
                 </div>
-                <h3 style="margin-bottom: 0.2rem;"></h3>
-                <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 1rem;"></p>
-                
-                
-                    <span class="subscription-badge"> Plan</span>
-                
-                    <span class="subscription-badge" style="background: #f1f5f9; color: #64748b;">Free Tier</span>
-                
+                <h3 id="profileUsername" style="margin-bottom: 0.2rem;">Loading…</h3>
+                <p id="profileEmail" style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 1rem;"></p>
 
-                <form method="POST" style="margin-top: 1.5rem; border-top: 1px solid var(--border-color); padding-top: 1.5rem;">
-                    
+                <span class="subscription-badge" id="planBadge">Free Plan</span>
+
+                <div class="alert alert-success" id="profileSaveMsg" style="display:none;"></div>
+
+                <form id="profileForm" style="margin-top: 1.5rem; border-top: 1px solid var(--border-color); padding-top: 1.5rem;">
                     <div class="form-group">
                         <label for="username">Username</label>
                         <input type="text" id="username" name="username" value="" required>
@@ -559,13 +609,13 @@
                         <label for="email">Gmail</label>
                         <input type="email" id="email" name="email" value="" required>
                     </div>
-                    <button type="submit" class="btn">
+                    <button type="submit" class="btn" id="profileSaveBtn">
                         Save
                     </button>
                 </form>
 
                 <div style="margin-top: 1.5rem;">
-                    <a href="/logout" style="color: var(--danger-red); text-decoration: none; font-size: 0.8rem; font-weight: 600;">
+                    <a href="/logout" class="logout-link" style="color: var(--danger-red); text-decoration: none; font-size: 0.8rem; font-weight: 600;">
                         Logout
                     </a>
                 </div>
@@ -574,28 +624,24 @@
             <section>
                 <div class="card" style="margin-bottom: 1.5rem;">
                     <h4 class="section-title"><i class="fas fa-credit-card"></i> Plan</h4>
-                    
-                    
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                            <div>
-                                <p style="color: var(--text-muted); font-size: 0.65rem; font-weight: 700; text-transform: uppercase;">Active Plan</p>
-                                <p style="font-size: 0.95rem; font-weight: 600;"></p>
-                            </div>
-                            <div>
-                                <p style="color: var(--text-muted); font-size: 0.65rem; font-weight: 700; text-transform: uppercase;">Price</p>
-                                <p style="font-size: 0.95rem; font-weight: 600;">₹</p>
-                            </div>
-                            <div>
-                                <p style="color: var(--text-muted); font-size: 0.65rem; font-weight: 700; text-transform: uppercase;">Status</p>
-                                <p><span class="status-pill status-paid">Active</span></p>
-                            </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div>
+                            <p style="color: var(--text-muted); font-size: 0.65rem; font-weight: 700; text-transform: uppercase;">Active Plan</p>
+                            <p id="planName" style="font-size: 0.95rem; font-weight: 600;">—</p>
                         </div>
-                    
-                        <div style="text-align: center; padding: 1rem;">
-                            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">Free tier access.</p>
-                            <a href="/pricing" class="btn" style="width: auto; display: inline-flex; padding: 0.5rem 1.5rem;">Upgrade</a>
+                        <div>
+                            <p style="color: var(--text-muted); font-size: 0.65rem; font-weight: 700; text-transform: uppercase;">Price</p>
+                            <p style="font-size: 0.95rem; font-weight: 600;">₹<span id="planPrice">0.00</span></p>
                         </div>
-                    
+                        <div>
+                            <p style="color: var(--text-muted); font-size: 0.65rem; font-weight: 700; text-transform: uppercase;">Status</p>
+                            <p><span class="status-pill status-paid">Active</span></p>
+                        </div>
+                    </div>
+                    <div style="text-align: center; padding: 1rem;">
+                        <a href="pricing.html" class="btn" style="width: auto; display: inline-flex; padding: 0.5rem 1.5rem;">Upgrade</a>
+                    </div>
                 </div>
 
                 <div class="card">
@@ -610,19 +656,10 @@
                                     <th>Status</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                
-                                    <tr>
-                                        <td style="font-family: monospace; font-weight: 600;"></td>
-                                        <td></td>
-                                        <td>₹</td>
-                                        <td><span class="status-pill status-paid">Paid</span></td>
-                                    </tr>
-                                
-                                    <tr>
-                                        <td colspan="4" style="text-align: center; padding: 1rem; color: var(--text-muted);">No history.</td>
-                                    </tr>
-                                
+                            <tbody id="invoiceRows">
+                                <tr>
+                                    <td colspan="4" style="text-align: center; padding: 1rem; color: var(--text-muted);">Loading…</td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -630,6 +667,83 @@
             </section>
         </div>
     </main>
+
+    <script>
+      // Profile page requires a real session — bounce guests to login, then
+      // populate the page from the JSON API (this static export has no
+      // server-rendered context any more).
+      fetch(`${AUTH_BACKEND}/api/profile`, { credentials: 'include' })
+        .then(r => {
+          if (r.status === 401) {
+            window.location.href = 'login.html';
+            return null;
+          }
+          return r.json();
+        })
+        .then(data => {
+          if (!data || !data.success) return;
+
+          document.getElementById('profileUsername').textContent = data.username;
+          document.getElementById('profileEmail').textContent = data.email;
+          document.getElementById('username').value = data.username;
+          document.getElementById('email').value = data.email;
+          document.getElementById('planBadge').textContent = `${data.plan} Plan`;
+          document.getElementById('planName').textContent = data.plan;
+          document.getElementById('planPrice').textContent = data.price;
+
+          const invoiceRows = document.getElementById('invoiceRows');
+          if (data.invoices && data.invoices.length) {
+            invoiceRows.innerHTML = data.invoices.map(inv => `
+              <tr>
+                <td style="font-family: monospace; font-weight: 600;">${inv.invoice_number}</td>
+                <td>${inv.date}</td>
+                <td>₹${inv.amount}</td>
+                <td><span class="status-pill status-paid">Paid</span></td>
+              </tr>
+            `).join('');
+          } else {
+            invoiceRows.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 1rem; color: var(--text-muted);">No history.</td></tr>';
+          }
+        })
+        .catch(() => {
+          showToast('Could not reach the server. Please try again later.', 'error');
+        });
+
+      document.getElementById('profileForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('profileSaveBtn');
+        const msg = document.getElementById('profileSaveMsg');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+        try {
+          const res = await fetch(`${AUTH_BACKEND}/api/profile-update`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({
+              username: document.getElementById('username').value.trim(),
+              email: document.getElementById('email').value.trim(),
+            }),
+          });
+          const data = await res.json();
+          if (data.success) {
+            document.getElementById('profileUsername').textContent = data.username;
+            document.getElementById('profileEmail').textContent = data.email;
+            const cached = JSON.parse(localStorage.getItem('user') || '{}');
+            localStorage.setItem('user', JSON.stringify({ ...cached, username: data.username, email: data.email }));
+            showToast('Profile updated!', 'success');
+          } else {
+            showToast(data.error || 'Update failed.', 'error');
+          }
+        } catch (err) {
+          showToast('Connection error. Please try again.', 'error');
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = 'Save';
+        }
+      });
+    </script>
 
 </body>
 </html>

@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.PermissionRequest;
 import android.webkit.ValueCallback;
@@ -255,9 +256,17 @@ public class MainActivity extends AppCompatActivity {
     private void setupSwipeRefresh() {
         swipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(this, R.color.teal_500));
 
-        // Only enable swipe-to-refresh when WebView is scrolled all the way to the top
-        webView.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-            swipeRefreshLayout.setEnabled(scrollY == 0);
+        // Decide once per gesture, at touch-down, whether pull-to-refresh is allowed.
+        // Deciding this live during the scroll (e.g. via a scroll-change listener) flips
+        // the layout "enabled" the instant the WebView reaches scrollY==0 mid-drag, so a
+        // single continuous swipe that scrolls content up to the top then keeps going
+        // gets hijacked into an unwanted refresh. Locking the decision at ACTION_DOWN
+        // means refresh only triggers when the gesture truly starts from the top.
+        webView.setOnTouchListener((v, event) -> {
+            if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+                swipeRefreshLayout.setEnabled(webView.getScrollY() == 0);
+            }
+            return false; // let WebView keep handling the touch normally
         });
 
         swipeRefreshLayout.setOnRefreshListener(() -> {

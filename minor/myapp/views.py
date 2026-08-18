@@ -117,24 +117,21 @@ def camera_capture(request):
     return render(request, 'camera_capture.html')
 
 @csrf_exempt
-@login_required(login_url='login')
 def predict_api(request):
     if request.method == 'POST':
         try:
             request.session['last_activity'] = time.time()
-            if not check_plan(request.user):
-                return JsonResponse({'error': 'Subscription required for this feature'}, status=403)
-            
+
             if 'file' not in request.FILES:
                 return JsonResponse({'error': 'No file uploaded'}, status=400)
-            
+
             file = request.FILES['file']
             if not file.content_type.startswith('image/'):
                 return JsonResponse({'error': 'File must be an image'}, status=400)
-            
+
             symptom_start_date = request.POST.get('symptom_start_date')
             result = ml_service.predict(file, symptom_start_date)
-            
+
             if 'error' in result:
                 return JsonResponse(result, status=500)
             return JsonResponse(result)
@@ -155,6 +152,7 @@ def check_auth_status(request):
         return JsonResponse({
             'authenticated': True,
             'username': request.user.username,
+            'email': request.user.email,
             'plan': plan
         })
     return JsonResponse({'authenticated': False})
@@ -209,3 +207,119 @@ def activate_plan(request):
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)})
     return JsonResponse({'success': False, 'error': 'Invalid request'})
+
+# ─────────────────────────────────────────
+# JSON API endpoints for static frontend
+# ─────────────────────────────────────────
+
+@csrf_exempt
+def api_login(request):
+    """JSON API: Login with email + password, returns session cookie"""
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'error': 'Method not allowed'}, status=405)
+    try:
+        data = json.loads(request.body)
+        email = data.get('email', '').strip()
+        password = data.get('password', '')
+        if not email or not password:
+            return JsonResponse({'success': False, 'error': 'Email and password are required'})
+        user = authenticate(request, username=email, password=password)
+        if user is not None:
+            login(request, user, backend='myapp.backends.EmailBackend')
+            request.session['last_activity'] = time.time()
+            subscription = getattr(user, 'subscription', None)
+            plan = subscription.plan_name if subscription else 'Free'
+            return JsonResponse({
+                'success': True,
+                'username': user.username,
+                'email': user.email,
+                'plan': plan
+            })
+        return JsonResponse({'success': False, 'error': 'Invalid email or password'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+
+@csrf_exempt
+def api_register(request):
+    """JSON API: Register new user"""
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'error': 'Method not allowed'}, status=405)
+    try:
+        data = json.loads(request.body)
+        username = data.get('username', '').strip()
+        email = data.get('email', '').strip()
+        password1 = data.get('password1', '')
+        password2 = data.get('password2', '')
+
+        if not username or not email or not password1 or not password2:
+            return JsonResponse({'success': False, 'error': 'All fields are required'})
+        if password1 != password2:
+            return JsonResponse({'success': False, 'error': 'Passwords do not match'})
+        if len(password1) < 8:
+            return JsonResponse({'success': False, 'error': 'Password must be at least 8 characters'})
+        if User.objects.filter(username=username).exists():
+            return JsonResponse({'success': False, 'error': 'Username already taken'})
+        if User.objects.filter(email=email).exists():
+            return JsonResponse({'success': False, 'error': 'Email already registered'})
+
+        user = User.objects.create_user(username=username, email=email, password=password1)
+        login(request, user, backend='myapp.backends.EmailBackend')
+        request.session['last_activity'] = time.time()
+        return JsonResponse({'success': True, 'username': user.username, 'email': user.email})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+
+@csrf_exempt
+def api_logout(request):
+    """JSON API: Logout"""
+    logout(request)
+    return JsonResponse({'success': True})
+
+
+@csrf_exempt
+def api_profile(request):
+    """JSON API: Full profile data (plan, price, invoices) for the static frontend"""
+    if not request.user.is_authenticated:
+        return JsonResponse({'success': False, 'error': 'Not authenticated'}, status=401)
+    user = request.user
+    subscription = getattr(user, 'subscription', None)
+    invoices = [
+        {
+            'invoice_number': inv.invoice_number,
+            'amount': str(inv.amount),
+            'date': inv.date.strftime('%Y-%m-%d'),
+        }
+        for inv in user.invoices.order_by('-date')[:20]
+    ]
+    return JsonResponse({
+        'success': True,
+        'username': user.username,
+        'email': user.email,
+        'plan': subscription.plan_name if subscription else 'Free',
+        'price': str(subscription.price) if subscription else '0.00',
+        'invoices': invoices,
+    })
+
+
+@csrf_exempt
+def api_profile_update(request):
+    """JSON API: Update profile username/email"""
+    if not request.user.is_authenticated:
+        return JsonResponse({'success': False, 'error': 'Not authenticated'}, status=401)
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'error': 'Method not allowed'}, status=405)
+    try:
+        data = json.loads(request.body)
+        username = data.get('username', '').strip()
+        email = data.get('email', '').strip()
+        user = request.user
+        if username:
+            user.username = username
+        if email:
+            user.email = email
+        user.save()
+        return JsonResponse({'success': True, 'username': user.username, 'email': user.email})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)

@@ -49,6 +49,12 @@ urlpatterns = [
     path('profile', views.profile_view, name='profile'),
     path('activate-plan', views.activate_plan, name='activate_plan'),
 
+    # JSON API endpoints for static Vercel frontend
+    path('api/login', views.api_login, name='api_login'),
+    path('api/register', views.api_register, name='api_register'),
+    path('api/logout', views.api_logout, name='api_logout'),
+    path('api/profile', views.api_profile, name='api_profile'),
+    path('api/profile-update', views.api_profile_update, name='api_profile_update'),
 
     path('admin/', admin.site.urls),
     # Handle Chrome DevTools requests silently
