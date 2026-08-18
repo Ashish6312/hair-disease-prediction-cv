@@ -672,9 +672,18 @@
       // Profile page requires a real session — bounce guests to login, then
       // populate the page from the JSON API (this static export has no
       // server-rendered context any more).
+      //
+      // Any failure here — 401, a network/CORS hiccup, the Render free-tier
+      // backend cold-starting and the request timing out — means we can't
+      // confirm a session, so treat it the same as "not logged in" and leave.
+      // Previously only the clean 401 case redirected; a fetch error just
+      // logged a toast and left the page's default markup (Free Plan, ₹0.00
+      // shell) sitting on screen forever for a guest.
+      document.querySelector('main').style.visibility = 'hidden';
+
       fetch(`${AUTH_BACKEND}/api/profile`, { credentials: 'include' })
         .then(r => {
-          if (r.status === 401) {
+          if (!r.ok) {
             window.location.href = 'login.html';
             return null;
           }
@@ -683,6 +692,7 @@
         .then(data => {
           if (!data || !data.success) return;
 
+          document.querySelector('main').style.visibility = 'visible';
           document.getElementById('profileUsername').textContent = data.username;
           document.getElementById('profileEmail').textContent = data.email;
           document.getElementById('username').value = data.username;
@@ -706,7 +716,7 @@
           }
         })
         .catch(() => {
-          showToast('Could not reach the server. Please try again later.', 'error');
+          window.location.href = 'login.html';
         });
 
       document.getElementById('profileForm').addEventListener('submit', async (e) => {
