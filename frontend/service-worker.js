@@ -1,7 +1,7 @@
 const CACHE_NAME = 'hair-scalp-ai-v1';
 const urlsToCache = [
   '/',
-  '/static/manifest.json',
+  '/manifest.json',
   '/predict',
   '/login',
   '/register',
@@ -73,8 +73,8 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('push', (event) => {
   const options = {
     body: event.data ? event.data.text() : 'New update available!',
-    icon: '/static/icons/icon-192x192.png',
-    badge: '/static/icons/icon-72x72.png',
+    icon: '/icons/icon-192x192.png',
+    badge: '/icons/icon-72x72.png',
     vibrate: [200, 100, 200],
     data: {
       dateOfArrival: Date.now(),
