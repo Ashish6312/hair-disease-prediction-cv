@@ -2,7 +2,37 @@ from django.shortcuts import redirect
 from django.contrib.auth import logout
 from django.urls import reverse
 from django.contrib import messages
+from django.conf import settings
 import time
+
+
+class TokenAuthFallbackMiddleware:
+    """
+    The static frontend (a different origin from this API) authenticates
+    with the session cookie set at login. Some mobile browsers — Chrome on
+    Android in particular — block that cross-site cookie outright, so the
+    session never comes back on later requests even though login succeeded.
+
+    As a fallback, api_login/api_register also hand back the session key as
+    a bearer token. The frontend stores it and replays it as
+    `Authorization: Bearer <token>` when it has one. Map that header onto the
+    session cookie before SessionMiddleware runs, so the rest of the request
+    is authenticated exactly as if the cookie had arrived normally.
+    """
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        cookie_name = settings.SESSION_COOKIE_NAME
+        if cookie_name not in request.COOKIES:
+            auth = request.META.get('HTTP_AUTHORIZATION', '')
+            if auth.startswith('Bearer '):
+                token = auth[len('Bearer '):].strip()
+                if token:
+                    request.COOKIES[cookie_name] = token
+        return self.get_response(request)
+
 
 class SessionTimeoutMiddleware:
     """
