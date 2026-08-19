@@ -1,5 +1,7 @@
 # 🎯 Hair & Scalp Disease Prediction System
 
+🔗 **Live demo:** https://hair-self.vercel.app/
+
 ## 🚀 Quick Start (EASIEST METHOD)
 
 ### Just Double-Click to Run:
