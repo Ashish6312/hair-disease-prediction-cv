@@ -81,28 +81,40 @@
   background: rgba(255, 255, 255, 0.3);
 }
 
-/* Install Button (in navbar) */
-#installButton {
-  display: none;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  background: linear-gradient(135deg, #14b8a6, #10b981);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-weight: 600;
+/* Install Button (navbar icon button, matches .theme-toggle) */
+.pwa-install-btn {
+  background: var(--white-color, #fff);
+  border: 1px solid var(--border-color, #e5e7eb);
+  color: var(--text-light, #6b7280);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
   cursor: pointer;
   transition: all 0.3s;
+  font-size: 1rem;
+  align-items: center;
+  justify-content: center;
 }
 
-#installButton:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 6px -1px rgba(20, 184, 166, 0.4);
+.pwa-install-btn:hover {
+  color: var(--primary-color, #14b8a6);
+  transform: rotate(15deg);
 }
 
-#installButton i {
-  font-size: 1.2rem;
+@media (max-width: 768px) {
+  .pwa-install-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .pwa-install-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 0.8rem;
+  }
 }
 
 /* PWA Notification */
