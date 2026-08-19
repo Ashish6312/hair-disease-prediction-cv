@@ -53,6 +53,26 @@ mechanism), so there's one less hand-edited file to get wrong.
   is set to `AppIcon` in both build configs. Swap the PNG for real artwork
   any time — it's a plain image, no Xcode needed to replace it.
 
+## CI (`.github/workflows/ios-build.yml`)
+
+Runs on `macos-latest` on every push/PR touching `ios-app/`:
+
+- **No secrets set**: builds unsigned for the simulator (`CODE_SIGNING_ALLOWED=NO`)
+  — just proves the project compiles, no `.ipa` comes out of this path.
+- **Secrets set**: imports your distribution cert + provisioning profile,
+  archives signed for device, exports a real `.ipa`, uploads it as a
+  workflow artifact. Add these repo secrets (Settings → Secrets and
+  variables → Actions) to unlock it:
+  - `IOS_DIST_CERT_P12_BASE64` — `base64 -i Distribution.p12 | pbcopy`
+  - `IOS_DIST_CERT_PASSWORD` — the `.p12` export password
+  - `IOS_PROVISION_PROFILE_BASE64` — `base64 -i Profile.mobileprovision | pbcopy`
+  - `IOS_EXPORT_TEAM_ID` — your 10-char Apple Developer Team ID
+
+  All four require an active Apple Developer Program membership. The export
+  method is hardcoded to `ad-hoc` (installs on devices registered in the
+  provisioning profile); switch it to `app-store` in the workflow once
+  you're ready to ship to TestFlight/App Store.
+
 ## Known gaps (need a Mac, can't be done from here)
 
 - **Bundle ID**: currently `com.hairscalp.detector` (same reverse-DNS as the
