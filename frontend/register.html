@@ -271,7 +271,7 @@
       <i class="fas fa-stethoscope"></i> Hair & Scalp AI
     </a>
     
-    <div class="nav-main">
+    <div class="nav-main" id="navMain">
       <ul class="nav-links">
         <li><a href="/">Home</a></li>
         <li><a href="/disease_info">Diseases</a></li>
@@ -300,6 +300,10 @@
       
       <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle Theme">
         <i class="fas fa-moon"></i>
+      </button>
+
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="navMain">
+        <i class="fas fa-bars"></i>
       </button>
     </div>
   </div>
@@ -531,8 +535,51 @@
     color: var(--nav-hover);
   }
 
+  .nav-toggle {
+    display: none;
+    background: var(--dropdown-bg);
+    border: 1px solid var(--nav-border);
+    color: var(--nav-text);
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    transition: all 0.2s;
+  }
+
+  .nav-toggle:hover {
+    border-color: var(--nav-hover);
+    color: var(--nav-hover);
+  }
+
   @media (max-width: 768px) {
-    .nav-main { display: none; }
+    .nav-toggle { display: flex; }
+    .nav-main {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--dropdown-bg);
+      border-bottom: 1px solid var(--nav-border);
+      box-shadow: var(--dropdown-shadow);
+    }
+    .nav-main.show { display: block; }
+    .nav-links {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+      padding: 0.5rem 1.5rem 1rem;
+    }
+    .nav-links a {
+      display: block;
+      padding: 0.85rem 0;
+      border-bottom: 1px solid var(--nav-border);
+    }
+    .nav-links li:last-child a { border-bottom: none; }
     .toast-container { right: 1rem; left: 1rem; top: 1rem; }
     .toast { min-width: auto; }
   }
@@ -556,6 +603,30 @@
         if (!trigger.contains(e.target) && !menu.contains(e.target)) {
           menu.classList.remove('show');
         }
+      });
+    }
+
+    // Mobile nav toggle
+    const navToggle = document.getElementById('navToggle');
+    const navMain = document.getElementById('navMain');
+    if (navToggle && navMain) {
+      const closeNav = () => {
+        navMain.classList.remove('show');
+        navToggle.setAttribute('aria-expanded', 'false');
+        navToggle.querySelector('i').className = 'fas fa-bars';
+      };
+      navToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = navMain.classList.toggle('show');
+        navToggle.setAttribute('aria-expanded', String(isOpen));
+        navToggle.querySelector('i').className = isOpen ? 'fas fa-times' : 'fas fa-bars';
+      });
+      navMain.querySelectorAll('a').forEach(a => a.addEventListener('click', closeNav));
+      document.addEventListener('click', (e) => {
+        if (!navToggle.contains(e.target) && !navMain.contains(e.target)) closeNav();
+      });
+      window.addEventListener('resize', () => {
+        if (window.innerWidth > 768) closeNav();
       });
     }
   });
@@ -653,8 +724,15 @@
     <script>
       const BACKEND = 'https://hair-scalp-backend.onrender.com';
 
+      // A stored bearer token is the fallback path for browsers (mobile Chrome
+      // in particular) that block the cross-site session cookie outright.
+      function authHeaders() {
+        const token = localStorage.getItem('authToken');
+        return token ? { 'Authorization': `Bearer ${token}` } : {};
+      }
+
       // Check if already logged in
-      fetch(`${BACKEND}/check-auth`, { credentials: 'include' })
+      fetch(`${BACKEND}/check-auth`, { credentials: 'include', headers: authHeaders() })
         .then(r => r.json())
         .then(data => {
           if (data.authenticated) {
@@ -693,6 +771,7 @@
           const data = await res.json();
           if (data.success) {
             localStorage.setItem('user', JSON.stringify({ username: data.username, email: data.email, plan: 'Free' }));
+            if (data.token) localStorage.setItem('authToken', data.token);
             showToast('Account created! Redirecting...', 'success');
             setTimeout(() => { window.location.href = 'index.html'; }, 1000);
           } else {

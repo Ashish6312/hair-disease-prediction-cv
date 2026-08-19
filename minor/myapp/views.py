@@ -250,6 +250,11 @@ def api_login(request):
         if user is not None:
             login(request, user, backend='myapp.backends.EmailBackend')
             request.session['last_activity'] = time.time()
+            # Some mobile browsers (Chrome on Android especially) block the
+            # cross-site session cookie outright. Hand back the session key
+            # as a bearer token too, so the frontend can replay it via an
+            # Authorization header when the cookie never makes it back.
+            request.session.save()
             # The session is already established above — a plan-lookup
             # hiccup here shouldn't fail a login that already succeeded.
             try:
@@ -262,7 +267,8 @@ def api_login(request):
                 'success': True,
                 'username': user.username,
                 'email': user.email,
-                'plan': plan
+                'plan': plan,
+                'token': request.session.session_key,
             })
         return JsonResponse({'success': False, 'error': 'Invalid email or password'})
     except Exception as e:
@@ -296,7 +302,13 @@ def api_register(request):
         user = User.objects.create_user(username=username, email=email, password=password1)
         login(request, user, backend='myapp.backends.EmailBackend')
         request.session['last_activity'] = time.time()
-        return JsonResponse({'success': True, 'username': user.username, 'email': user.email})
+        request.session.save()
+        return JsonResponse({
+            'success': True,
+            'username': user.username,
+            'email': user.email,
+            'token': request.session.session_key,
+        })
     except Exception as e:
         logger.exception("api_register failed")
         return JsonResponse({'success': False, 'error': 'Something went wrong. Please try again.'}, status=500)
