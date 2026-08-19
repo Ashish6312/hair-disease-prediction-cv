@@ -10,6 +10,7 @@
 		1A0000000000000000000005 /* HairScalpAIApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0000000000000000000001 /* HairScalpAIApp.swift */; };
 		1A0000000000000000000006 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0000000000000000000002 /* ContentView.swift */; };
 		1A0000000000000000000007 /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0000000000000000000003 /* WebView.swift */; };
+		1A0000000000000000000017 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1A0000000000000000000016 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -17,6 +18,7 @@
 		1A0000000000000000000002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		1A0000000000000000000003 /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
 		1A0000000000000000000004 /* HairScalpAI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HairScalpAI.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1A0000000000000000000016 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,6 +46,7 @@
 				1A0000000000000000000001 /* HairScalpAIApp.swift */,
 				1A0000000000000000000002 /* ContentView.swift */,
 				1A0000000000000000000003 /* WebView.swift */,
+				1A0000000000000000000016 /* Assets.xcassets */,
 			);
 			path = HairScalpAI;
 			sourceTree = "<group>";
@@ -114,6 +117,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1A0000000000000000000017 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -199,6 +203,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Used to capture a photo of your scalp for AI analysis.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Used to select a scalp photo from your library for AI analysis.";
@@ -224,6 +229,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Used to capture a photo of your scalp for AI analysis.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Used to select a scalp photo from your library for AI analysis.";
