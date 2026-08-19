@@ -44,13 +44,17 @@ No `Info.plist` file — camera/photo-library usage strings and other keys are
 set via `INFOPLIST_KEY_*` build settings (Xcode 13+'s generated-Info.plist
 mechanism), so there's one less hand-edited file to get wrong.
 
-## Known gaps to fill in Xcode (needs a Mac, can't be done from here)
+## What's filled in
 
-- **App icon**: no `Assets.xcassets` yet — add one (Xcode: right-click the
-  `HairScalpAI` group → New File → Asset Catalog, name it `Assets.xcassets`,
-  then drag in an `AppIcon` set) and set `ASSETCATALOG_COMPILER_APPICON_NAME`
-  to `AppIcon` in Build Settings. The Android app's icons live at
-  `android-app/app/src/main/res/mipmap-*` if you want the same artwork.
+- **App icon**: `Assets.xcassets/AppIcon.appiconset` has a single 1024x1024
+  PNG (Xcode 14+ single-size app icon — it generates every smaller size at
+  build time), redrawn to match the Android adaptive icon (teal `#14B8A6`
+  background, white magnifier/crosshair mark). `ASSETCATALOG_COMPILER_APPICON_NAME`
+  is set to `AppIcon` in both build configs. Swap the PNG for real artwork
+  any time — it's a plain image, no Xcode needed to replace it.
+
+## Known gaps (need a Mac, can't be done from here)
+
 - **Bundle ID**: currently `com.hairscalp.detector` (same reverse-DNS as the
   Android `applicationId` — fine, Apple's and Google's namespaces don't
   collide). Change it in Build Settings if you want it distinct, and it must
